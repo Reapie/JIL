@@ -1,2 +1,0 @@
-# JIL
- Java Interpreted Language
