@@ -21,6 +21,9 @@ public class Lexer {
     public Lexer(String input) {
         this.input = new StringBuilder(input);
         originalInput = input;
+
+        // found this on stackoverflow, no clue what these chars are,
+        // but i guess they cant be that harmful to include
         blankChars.add('\r');
         blankChars.add('\n');
         blankChars.add((char) 8);
@@ -94,7 +97,7 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("var number = 3.14");
+        Lexer lexer = new Lexer("const bool = x < 1 or x > 5");
         lexer.lex();
     }
 
