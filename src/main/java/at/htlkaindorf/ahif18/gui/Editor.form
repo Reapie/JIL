@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="at.htlkaindorf.ahif18.gui.Editor">
+  <grid id="27dc6" binding="mainPanel" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="20" y="20" width="465" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <component id="10e25" class="javax.swing.JEditorPane" binding="editor">
+        <constraints border-constraint="Center"/>
+        <properties/>
+      </component>
+      <component id="4c27" class="javax.swing.JEditorPane" binding="console">
+        <constraints border-constraint="South"/>
+        <properties/>
+      </component>
+      <toolbar id="1752d">
+        <constraints border-constraint="North"/>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="2b0dc" class="javax.swing.JButton" binding="btnFile">
+            <constraints/>
+            <properties>
+              <text value="File"/>
+            </properties>
+          </component>
+        </children>
+      </toolbar>
+    </children>
+  </grid>
+</form>
