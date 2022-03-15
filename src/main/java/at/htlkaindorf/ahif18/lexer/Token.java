@@ -9,19 +9,19 @@ import java.util.regex.Pattern;
  */
 public enum Token {
 
-    TK_MINUS ("-"),
-    TK_PLUS ("\\+"),
-    TK_MUL ("\\*"),
-    TK_DIV ("/"),
-    TK_NOT ("~"),
-    TK_AND ("(&&|and)"),
-    TK_OR ("(\\|\\||or)"),
-    TK_LESS ("<"),
-    TK_LEG ("<="),
-    TK_GT (">"),
-    TK_GEQ (">="),
-    TK_EQ ("=="),
-    TK_DIFFERENT ("!="),
+    TK_MINUS ("-", TYPE.OP_PLUSMIN),
+    TK_PLUS ("\\+", TYPE.OP_PLUSMIN),
+    TK_MUL ("\\*", TYPE.OP_MULDIV),
+    TK_DIV ("/", TYPE.OP_MULDIV),
+    TK_NOT ("(!|not)", TYPE.OP_BOOL),
+    TK_AND ("(&&|and)", TYPE.OP_BOOL),
+    TK_OR ("(\\|\\||or)", TYPE.OP_BOOL),
+    TK_LESS ("<", TYPE.OP_COMPAR),
+    TK_LEG ("<=", TYPE.OP_COMPAR),
+    TK_GT (">", TYPE.OP_COMPAR),
+    TK_GEQ (">=", TYPE.OP_COMPAR),
+    TK_EQ ("==", TYPE.OP_COMPAR),
+    TK_DIFFERENT ("!=", TYPE.OP_COMPAR),
     TK_ASSIGN ("="),
     TK_OPEN ("\\("),
     TK_CLOSE ("\\)"),
@@ -33,8 +33,8 @@ public enum Token {
     TK_KEY_THEN ("then"),
     TK_KEY_ELSE ("else"),
     TK_KEY_ENDIF ("endif"),
-    TK_VAR_DECL ("var"),
-    TK_CONST_DECL ("const"),
+    TK_KEY_VAR("var"),
+    TK_KEY_CONST("const"),
     TK_OPEN_BRACKET ("\\{"),
     TK_CLOSE_BRACKET ("\\}"),
 
@@ -44,9 +44,16 @@ public enum Token {
     IDENTIFIER ("\\w+");
 
     private final Pattern pattern;
+    private final TYPE type;
 
     private Token(String regex) {
         pattern = Pattern.compile("^" + regex);
+        type = TYPE.DEFAULT;
+    }
+
+    private Token(String regex, TYPE type) {
+        pattern = Pattern.compile("^" + regex);
+        this.type = type;
     }
 
     int endOfMatch(String s) {
@@ -55,5 +62,23 @@ public enum Token {
             return m.end();
 
         return -1;
+    }
+
+    public enum TYPE {
+        OP_COMPAR(1),
+        OP_BOOL(1),
+        OP_MULDIV(3),
+        OP_PLUSMIN(2),
+        DEFAULT(0);
+
+        private final int priority;
+
+        private TYPE(int priority) {
+            this.priority = priority;
+        }
+
+        public int getPriority() {
+            return priority;
+        }
     }
 }

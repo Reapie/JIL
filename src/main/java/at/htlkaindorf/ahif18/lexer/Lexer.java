@@ -22,15 +22,10 @@ public class Lexer {
         this.input = new StringBuilder(input);
         originalInput = input;
 
-        // found this on stackoverflow, no clue what these chars are,
-        // but i guess they cant be that harmful to include
         blankChars.add('\r');
         blankChars.add('\n');
-        blankChars.add((char) 8);
-        blankChars.add((char) 9);
-        blankChars.add((char) 11);
-        blankChars.add((char) 12);
-        blankChars.add((char) 32);
+        blankChars.add('\t');
+        blankChars.add(' ');
 
         next();
     }
@@ -89,7 +84,7 @@ public class Lexer {
     }
 
     public void lex() {
-        System.out.printf("Lexing Expression %s: \n", originalInput);
+        System.out.printf("Lexing Expression \n%s\n", originalInput);
         while (!done) {
             System.out.printf("%16s : %s\n", currentLexeme(), currentToken());
             next();
@@ -97,7 +92,7 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("const bool = x < 1 or x > 5");
+        Lexer lexer = new Lexer("const greeting = \"Hello there\"");
         lexer.lex();
     }
 
