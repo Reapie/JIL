@@ -15,7 +15,6 @@ public class Lexer {
     private int pos = 0;
     private StringBuilder input; // String Builder gives us more methods than String
     private String originalInput;
-    private String lexeme;
     private String errorMessage = "";
 
     public Lexer(String input) {
@@ -32,10 +31,6 @@ public class Lexer {
 
     public Token currentToken() {
         return token;
-    }
-
-    public String currentLexeme() {
-        return lexeme;
     }
 
     public void next() {
@@ -69,12 +64,11 @@ public class Lexer {
     }
 
     private boolean findNextToken() {
-        for (Token t : Token.values()) {
+        for (TokenType t : TokenType.values()) {
             int end = t.endOfMatch(input.toString());
 
             if (end != -1) {
-                token = t;
-                lexeme = input.substring(0, end);
+                token = new Token(input.substring(0, end), t);
                 input.delete(0, end);
                 return true;
             }
@@ -86,13 +80,14 @@ public class Lexer {
     public void lex() {
         System.out.printf("Lexing Expression \n%s\n", originalInput);
         while (!done) {
-            System.out.printf("%16s : %s\n", currentLexeme(), currentToken());
+            System.out.printf("%16s : %s (%d)\n", token.getLexeme(), token.getTokenType(),
+                    token.getTokenType().getCategory().getPriority());
             next();
         }
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("const greeting = \"Hello there\"");
+        Lexer lexer = new Lexer("var x = 50 * (5 + 5)");
         lexer.lex();
     }
 
