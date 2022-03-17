@@ -1,5 +1,7 @@
 package at.htlkaindorf.ahif18.lexer;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -77,18 +79,24 @@ public class Lexer {
         return false;
     }
 
-    public void lex() {
+    public ArrayList<Token> lex() {
         System.out.printf("Lexing Expression \n%s\n", originalInput);
+        ArrayList<Token> tokens = new ArrayList<>();
         while (!done) {
-            System.out.printf("%16s : %s (%d)\n", token.getLexeme(), token.getTokenType(),
-                    token.getTokenType().getCategory().getPriority());
+            tokens.add(currentToken());
             next();
         }
+
+        return tokens;
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("var x = 50 * (5 + 5)");
-        lexer.lex();
+        Lexer lexer = new Lexer("const greeting = \"Hello World\"");
+        ArrayList<Token> tokens = lexer.lex();
+        for (Token t : tokens) {
+            System.out.printf("%16s : %s (%d)\n", t.getLexeme(), t.getType(),
+                    t.getType().getCategory().getPriority());
+        }
     }
 
 }

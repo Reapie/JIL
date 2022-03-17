@@ -9,22 +9,22 @@ import java.util.regex.Pattern;
  */
 public enum TokenType {
 
-    TK_MINUS ("-", Category.OP_PLUSMIN),
-    TK_PLUS ("\\+", Category.OP_PLUSMIN),
-    TK_MUL ("\\*", Category.OP_MULDIV),
-    TK_DIV ("/", Category.OP_MULDIV),
-    TK_NOT ("(!|not)", Category.OP_BOOL),
-    TK_AND ("(&&|and)", Category.OP_BOOL),
-    TK_OR ("(\\|\\||or)", Category.OP_BOOL),
-    TK_LESS ("<", Category.OP_COMPAR),
-    TK_LEG ("<=", Category.OP_COMPAR),
-    TK_GT (">", Category.OP_COMPAR),
-    TK_GEQ (">=", Category.OP_COMPAR),
-    TK_EQ ("==", Category.OP_COMPAR),
-    TK_DIFFERENT ("!=", Category.OP_COMPAR),
+    TK_MINUS ("-", TokenCategory.OP_PLUSMIN),
+    TK_PLUS ("\\+", TokenCategory.OP_PLUSMIN),
+    TK_MUL ("\\*", TokenCategory.OP_MULDIV),
+    TK_DIV ("/", TokenCategory.OP_MULDIV),
+    TK_NOT ("(!|not)", TokenCategory.OP_BOOL),
+    TK_AND ("(&&|and)", TokenCategory.OP_BOOL),
+    TK_OR ("(\\|\\||or)", TokenCategory.OP_BOOL),
+    TK_LESS ("<", TokenCategory.OP_COMPAR),
+    TK_LEG ("<=", TokenCategory.OP_COMPAR),
+    TK_GT (">", TokenCategory.OP_COMPAR),
+    TK_GEQ (">=", TokenCategory.OP_COMPAR),
+    TK_EQ ("==", TokenCategory.OP_COMPAR),
+    TK_DIFFERENT ("!=", TokenCategory.OP_COMPAR),
     TK_ASSIGN ("="),
-    TK_OPEN ("\\(", Category.OP_GROUP),
-    TK_CLOSE ("\\)", Category.OP_GROUP),
+    TK_OPEN ("\\(", TokenCategory.OP_GROUP),
+    TK_CLOSE ("\\)", TokenCategory.OP_GROUP),
     TK_SEMI (";"),
     TK_COMMA (","),
     TK_KEY_DEFINE ("define"),
@@ -44,14 +44,14 @@ public enum TokenType {
     IDENTIFIER ("\\w+");
 
     private final Pattern pattern;
-    private final Category category;
+    private final TokenCategory category;
 
     private TokenType(String regex) {
         pattern = Pattern.compile("^" + regex);
-        category = Category.DEFAULT;
+        category = TokenCategory.DEFAULT;
     }
 
-    private TokenType(String regex, Category category) {
+    private TokenType(String regex, TokenCategory category) {
         pattern = Pattern.compile("^" + regex);
         this.category = category;
     }
@@ -64,26 +64,8 @@ public enum TokenType {
         return -1;
     }
 
-    public Category getCategory() {
+    public TokenCategory getCategory() {
         return category;
     }
 
-    public enum Category {
-        OP_COMPAR(1),
-        OP_BOOL(1),
-        OP_MULDIV(3),
-        OP_PLUSMIN(2),
-        OP_GROUP(5),
-        DEFAULT(0);
-
-        private final int priority;
-
-        private Category(int priority) {
-            this.priority = priority;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
-    }
 }

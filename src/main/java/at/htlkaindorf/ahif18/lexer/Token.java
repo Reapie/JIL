@@ -8,5 +8,5 @@ import lombok.Data;
 public class Token {
 
     private String lexeme;
-    private TokenType tokenType;
+    private TokenType type;
 }
