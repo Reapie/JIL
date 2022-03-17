@@ -1,10 +1,11 @@
-package at.htlkaindorf.ahif18.lexer;
+package at.htlkaindorf.ahif18.tokens;
 
 public enum TokenCategory {
         OP_COMPAR(1),
         OP_BOOL(1),
         OP_MULDIV(3),
         OP_PLUSMIN(2),
+        OP_POWER(4),
         OP_GROUP(5),
         DEFAULT(0);
 

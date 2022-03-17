@@ -1,4 +1,4 @@
-package at.htlkaindorf.ahif18.lexer;
+package at.htlkaindorf.ahif18.tokens;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -11,8 +11,10 @@ public enum TokenType {
 
     TK_MINUS ("-", TokenCategory.OP_PLUSMIN),
     TK_PLUS ("\\+", TokenCategory.OP_PLUSMIN),
+    TK_POW ("(\\*\\*|pow)", TokenCategory.OP_POWER),
     TK_MUL ("\\*", TokenCategory.OP_MULDIV),
     TK_DIV ("/", TokenCategory.OP_MULDIV),
+
     TK_NOT ("(!|not)", TokenCategory.OP_BOOL),
     TK_AND ("(&&|and)", TokenCategory.OP_BOOL),
     TK_OR ("(\\|\\||or)", TokenCategory.OP_BOOL),
@@ -56,7 +58,7 @@ public enum TokenType {
         this.category = category;
     }
 
-    int endOfMatch(String s) {
+    public int endOfMatch(String s) {
         Matcher m = pattern.matcher(s);
         if (m.find())
             return m.end();

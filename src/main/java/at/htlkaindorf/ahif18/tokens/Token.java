@@ -1,4 +1,4 @@
-package at.htlkaindorf.ahif18.lexer;
+package at.htlkaindorf.ahif18.tokens;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,6 +1,8 @@
 package at.htlkaindorf.ahif18.lexer;
 
-import java.lang.reflect.Array;
+import at.htlkaindorf.ahif18.tokens.Token;
+import at.htlkaindorf.ahif18.tokens.TokenType;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -91,7 +93,7 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("const greeting = \"Hello World\"");
+        Lexer lexer = new Lexer("3 ** (1 + 1)");
         ArrayList<Token> tokens = lexer.lex();
         for (Token t : tokens) {
             System.out.printf("%16s : %s (%d)\n", t.getLexeme(), t.getType(),
