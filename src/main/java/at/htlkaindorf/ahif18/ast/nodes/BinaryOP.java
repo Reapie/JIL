@@ -4,8 +4,9 @@ import at.htlkaindorf.ahif18.ast.Value;
 import at.htlkaindorf.ahif18.eval.ValueMismatchException;
 import at.htlkaindorf.ahif18.parser.ParserException;
 import at.htlkaindorf.ahif18.tokens.Token;
+import lombok.Data;
 
-
+@Data
 
 public class BinaryOP extends Expr {
 
