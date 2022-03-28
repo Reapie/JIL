@@ -11,10 +11,13 @@ public class Value<T> {
     private types type;
     private T value;
 
-    public Value(T t) {
-        if (t instanceof String) {
+    public Value(T value) {
+        if (value instanceof String) {
             type = types.STRING;
+        } else if (value instanceof Double) {
+            type = types.NUMBER;
         }
+        this.value = value;
     }
 
 
