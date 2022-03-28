@@ -39,21 +39,21 @@ public enum TokenType {
     TK_KEY_CONST("const"),
     TK_OPEN_BRACKET ("\\{"),
     TK_CLOSE_BRACKET ("\\}"),
+    TK_EOF(""),
 
-    LT_REAL ("(\\d*)\\.\\d+"),
-    LT_INTEGER ("\\d+"),
+    LT_NUMBER ("(\\d*)\\.\\d+"),
     LT_STRING ("\"[^\"]+\""),
     IDENTIFIER ("\\w+");
 
     private final Pattern pattern;
     private final TokenCategory category;
 
-    private TokenType(String regex) {
+    TokenType(String regex) {
         pattern = Pattern.compile("^" + regex);
         category = TokenCategory.DEFAULT;
     }
 
-    private TokenType(String regex, TokenCategory category) {
+    TokenType(String regex, TokenCategory category) {
         pattern = Pattern.compile("^" + regex);
         this.category = category;
     }

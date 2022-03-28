@@ -7,6 +7,7 @@ public enum TokenCategory {
         OP_PLUSMIN(2),
         OP_POWER(4),
         OP_GROUP(5),
+        STD_FUNC(5),
         DEFAULT(0);
 
         private final int priority;

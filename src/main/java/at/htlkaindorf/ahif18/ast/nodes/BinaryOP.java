@@ -1,6 +1,8 @@
 package at.htlkaindorf.ahif18.ast.nodes;
 
 import at.htlkaindorf.ahif18.ast.Value;
+import at.htlkaindorf.ahif18.eval.ValueMismatchException;
+import at.htlkaindorf.ahif18.parser.ParserException;
 import at.htlkaindorf.ahif18.tokens.Token;
 
 
@@ -11,7 +13,16 @@ public class BinaryOP extends Expr {
     private Expr left, right;
 
     public Value evaluate() {
-        return new Value<>(0);
+        switch (type.getType()) {
+            case TK_PLUS -> {
+                try {
+                    return left.evaluate().add(right.evaluate());
+                } catch (ParserException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return new Value();
     }
 
 }

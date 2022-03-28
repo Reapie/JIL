@@ -5,6 +5,7 @@ import at.htlkaindorf.ahif18.tokens.TokenType;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.Set;
 
 /*
@@ -74,7 +75,7 @@ public class Lexer {
         for (TokenType t : TokenType.values()) {
             int end = t.endOfMatch(input.toString());
 
-            if (end != -1) {
+            if (t != TokenType.TK_EOF && end != -1) {
                 token = new Token(input.substring(0, end), t, currentLine);
                 input.delete(0, end);
                 return true;
@@ -84,9 +85,9 @@ public class Lexer {
         return false;
     }
 
-    public ArrayList<Token> lex() {
+    public LinkedList<Token> lex() {
         System.out.printf("Lexing Expression \n%s\n", originalInput);
-        ArrayList<Token> tokens = new ArrayList<>();
+        LinkedList<Token> tokens = new LinkedList<>();
         while (!done) {
             tokens.add(currentToken());
             next();
@@ -96,8 +97,8 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("var wrtgzu123 =\n        15");
-        ArrayList<Token> tokens = lexer.lex();
+        Lexer lexer = new Lexer("var burger = 3735928559");
+        LinkedList<Token> tokens = lexer.lex();
         for (Token t : tokens) {
             System.out.printf("%16s : %s (%d) %d\n", t.getLexeme(), t.getType(),
                     t.getType().getCategory().getPriority(), t.getLineNumber());

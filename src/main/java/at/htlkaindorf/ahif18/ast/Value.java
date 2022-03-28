@@ -1,25 +1,42 @@
 package at.htlkaindorf.ahif18.ast;
 
+import at.htlkaindorf.ahif18.eval.ValueMismatchException;
+import at.htlkaindorf.ahif18.parser.ParserException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class Value<T> {
-    public enum types {NUMBER, STRING};
+public class Value {
+    public enum TYPES {NUMBER, STRING, DEFAULT};
 
-    private types type;
-    private T value;
+    private TYPES type;
+    private double numValue = 0;
+    private String strValue = "";
 
-    public Value(T value) {
-        if (value instanceof String) {
-            type = types.STRING;
-        } else if (value instanceof Double) {
-            type = types.NUMBER;
-        }
-        this.value = value;
+    public Value(Double value) {
+        type = TYPES.NUMBER;
+        this.numValue = value;
     }
 
+    public Value(String value) {
+        type = TYPES.NUMBER;
+        this.strValue = value;
+    }
+
+    public Value() {
+        type = TYPES.DEFAULT;
+    }
+
+    public Value add(Value other) throws ParserException {
+        if (type == other.getType()) {
+            if (type == TYPES.NUMBER) {
+                this.numValue += other.getNumValue();
+                return this;
+            }
+        }
+        return new Value();
+    }
 
 
 }
