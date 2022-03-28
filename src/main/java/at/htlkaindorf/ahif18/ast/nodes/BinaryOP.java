@@ -2,8 +2,9 @@ package at.htlkaindorf.ahif18.ast.nodes;
 
 import at.htlkaindorf.ahif18.ast.Value;
 import at.htlkaindorf.ahif18.tokens.Token;
+import lombok.Data;
 
-
+@Data
 
 public class BinaryOP extends Expr {
 

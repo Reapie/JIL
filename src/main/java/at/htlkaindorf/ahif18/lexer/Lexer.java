@@ -96,7 +96,7 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("var wrtgzu123 =\n        15");
+        Lexer lexer = new Lexer("15");
         ArrayList<Token> tokens = lexer.lex();
         for (Token t : tokens) {
             System.out.printf("%16s : %s (%d) %d\n", t.getLexeme(), t.getType(),
