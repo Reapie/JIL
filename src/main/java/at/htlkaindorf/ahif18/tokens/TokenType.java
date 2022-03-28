@@ -5,7 +5,7 @@ import java.util.regex.Pattern;
 
 /*
  * This Class describes the Grammar of our language,
- * keep in mind that the fist tokens will be checked fist, so you have to eg: put REAL before INT
+ * keep in mind that the fist tokens will be checked fist, so you have to eg: put ** before *
  */
 public enum TokenType {
 
