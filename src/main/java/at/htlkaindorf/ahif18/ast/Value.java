@@ -6,6 +6,17 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Value<T> {
-    private boolean constant;
+    public enum types {NUMBER, STRING};
+
+    private types type;
     private T value;
+
+    public Value(T t) {
+        if (t instanceof String) {
+            type = types.STRING;
+        }
+    }
+
+
+
 }

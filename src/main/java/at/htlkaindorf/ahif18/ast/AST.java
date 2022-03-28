@@ -1,12 +1,12 @@
 package at.htlkaindorf.ahif18.ast;
 
-import at.htlkaindorf.ahif18.ast.nodes.BaseNode;
+import at.htlkaindorf.ahif18.ast.nodes.Node;
 
 import java.util.TreeMap;
 
 public class AST {
 
-    private BaseNode root;
+    private Node root;
 
     private TreeMap<String, Value> variables;
 

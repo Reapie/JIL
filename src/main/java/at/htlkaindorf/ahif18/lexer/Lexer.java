@@ -93,7 +93,7 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("3**(1+1)");
+        Lexer lexer = new Lexer("var wrtgzu123 =        15");
         ArrayList<Token> tokens = lexer.lex();
         for (Token t : tokens) {
             System.out.printf("%16s : %s (%d)\n", t.getLexeme(), t.getType(),
