@@ -9,4 +9,6 @@ public class Token {
 
     private String lexeme;
     private TokenType type;
+    private int lineNumber;
+
 }

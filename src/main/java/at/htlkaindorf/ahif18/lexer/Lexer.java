@@ -20,14 +20,15 @@ public class Lexer {
     private StringBuilder input; // String Builder gives us more methods than String
     private String originalInput;
     private String errorMessage = "";
+    private int currentLine = 1;
 
     public Lexer(String input) {
         this.input = new StringBuilder(input);
         originalInput = input;
 
         blankChars.add('\r');
-        blankChars.add('\n');
         blankChars.add('\t');
+        blankChars.add('\n');
         blankChars.add(' ');
 
         next();
@@ -59,7 +60,9 @@ public class Lexer {
         int charsToDelete = 0;
 
         while (blankChars.contains(input.charAt(charsToDelete))) {
-            charsToDelete++;
+            if (input.charAt(charsToDelete) == '\n')
+                ++currentLine;
+            ++charsToDelete;
         }
 
         if (charsToDelete > 0) {
@@ -72,7 +75,7 @@ public class Lexer {
             int end = t.endOfMatch(input.toString());
 
             if (end != -1) {
-                token = new Token(input.substring(0, end), t);
+                token = new Token(input.substring(0, end), t, currentLine);
                 input.delete(0, end);
                 return true;
             }
@@ -93,11 +96,11 @@ public class Lexer {
     }
 
     public static void main(String[] args) {
-        Lexer lexer = new Lexer("var wrtgzu123 =        15");
+        Lexer lexer = new Lexer("var wrtgzu123 =\n        15");
         ArrayList<Token> tokens = lexer.lex();
         for (Token t : tokens) {
-            System.out.printf("%16s : %s (%d)\n", t.getLexeme(), t.getType(),
-                    t.getType().getCategory().getPriority());
+            System.out.printf("%16s : %s (%d) %d\n", t.getLexeme(), t.getType(),
+                    t.getType().getCategory().getPriority(), t.getLineNumber());
         }
     }
 
