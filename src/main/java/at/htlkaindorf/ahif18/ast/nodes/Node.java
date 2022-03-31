@@ -6,8 +6,7 @@ public abstract class Node {
 
     int lineNumber;
 
-    public Value evaluate() {
-        return new Value();
-    }
+    abstract public Value eval();
 
+    abstract public String print();
 }

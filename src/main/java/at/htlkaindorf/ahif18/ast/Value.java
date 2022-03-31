@@ -38,5 +38,53 @@ public class Value {
         return new Value();
     }
 
+    public Value sub(Value other) throws ParserException {
+        if (type == other.getType()) {
+            if (type == TYPES.NUMBER) {
+                this.numValue -= other.getNumValue();
+                return this;
+            }
+        }
+        return new Value();
+    }
+
+    public Value mul(Value other) throws ParserException {
+        if (type == other.getType()) {
+            if (type == TYPES.NUMBER) {
+                this.numValue *= other.getNumValue();
+                return this;
+            }
+        }
+        return new Value();
+    }
+
+    public Value div(Value other) throws ParserException {
+        if (type == other.getType()) {
+            if (type == TYPES.NUMBER) {
+                this.numValue /= other.getNumValue();
+                return this;
+            }
+        }
+        return new Value();
+    }
+
+    public Value pow(Value other) throws ParserException {
+        if (type == other.getType()) {
+            if (type == TYPES.NUMBER) {
+                this.numValue = Math.pow(this.numValue, other.getNumValue());
+                return this;
+            }
+        }
+        return new Value();
+    }
+
+    @Override
+    public String toString() {
+        if (type == TYPES.NUMBER) {
+            return String.valueOf(numValue);
+        }
+        return strValue;
+    }
+
 
 }

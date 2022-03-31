@@ -86,7 +86,6 @@ public class Lexer {
     }
 
     public LinkedList<Token> lex() {
-        System.out.printf("Lexing Expression \n%s\n", originalInput);
         LinkedList<Token> tokens = new LinkedList<>();
         while (!done) {
             tokens.add(currentToken());

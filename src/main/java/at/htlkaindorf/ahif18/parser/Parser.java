@@ -1,20 +1,22 @@
 package at.htlkaindorf.ahif18.parser;
 
 import at.htlkaindorf.ahif18.ast.AST;
+import at.htlkaindorf.ahif18.ast.nodes.BinaryExpr;
+import at.htlkaindorf.ahif18.ast.nodes.Expr;
+import at.htlkaindorf.ahif18.ast.nodes.LiteralExpr;
+import at.htlkaindorf.ahif18.ast.nodes.Node;
 import at.htlkaindorf.ahif18.lexer.Lexer;
 import at.htlkaindorf.ahif18.tokens.Token;
 import at.htlkaindorf.ahif18.tokens.TokenCategory;
 import at.htlkaindorf.ahif18.tokens.TokenType;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 public class Parser {
 
     private LinkedList<Token> tokens;
     private Token lookahead;
-    private AST output = new AST();
+    private final AST syntaxTree = new AST();
 
     public Parser(LinkedList<Token> tokens) {
         this.tokens = (LinkedList<Token>) tokens.clone();
@@ -26,84 +28,64 @@ public class Parser {
         tokens.pop();
         // at the end of input we return an epsilon token
         if (tokens.isEmpty())
-            lookahead = new Token("", TokenType.TK_EOF, lookahead.getLineNumber());
-        else
+            lookahead = new Token("EOF", TokenType.TK_EOF, lookahead.getLineNumber());
+        else {
             lookahead = tokens.getFirst();
+        }
     }
 
-    private void expression() throws ParserException {
+    private Expr expression() throws ParserException {
         // expression -> signed_term sum_op
-        signedTerm();
-        sumOp();
+        Expr expr = term();
+        return sumOp(expr);
     }
 
-    private void sumOp() throws ParserException {
+    private Expr sumOp(Expr expr) throws ParserException {
         if (lookahead.getType().getCategory() == TokenCategory.OP_PLUSMIN) {
             // sum_op -> PLUSMINUS term sum_op
+            Token op = lookahead;
             nextToken();
-            term();
-            sumOp();
-        } else {
-            // sum_op -> EPSILON
+            BinaryExpr add = new BinaryExpr(op, expr, expression());
+            return add;
         }
+        return expr;
     }
 
-    private void signedTerm() throws ParserException {
-        if (lookahead.getType().getCategory() == TokenCategory.OP_PLUSMIN) {
-            // signed_term -> PLUSMINUS term
-            nextToken();
-            term();
-        } else {
-            // signed_term -> term
-            term();
-        }
-    }
-
-    private void term() throws ParserException {
+    private Expr term() throws ParserException {
         // term -> factor term_op
-        factor();
-        termOp();
+        return termOp(factor());
     }
 
-    private void termOp() throws ParserException {
+    private Expr termOp(Expr expression) throws ParserException {
+        // term_op -> MULTDIV factor term_op
         if (lookahead.getType().getCategory() == TokenCategory.OP_MULDIV) {
-            // term_op -> MULTDIV factor term_op
+            Token op = lookahead;
             nextToken();
-            signedFactor();
-            termOp();
-        } else {
-            // term_op -> EPSILON
+            Expr prod = new BinaryExpr(op, expression, expression());
+            return termOp(prod);
         }
+
+        // term_op -> EPSILON
+        return expression;
     }
 
-    private void signedFactor() throws ParserException {
-        if (lookahead.getType().getCategory() == TokenCategory.OP_PLUSMIN) {
-            // signed_factor -> PLUSMINUS factor
-            nextToken();
-            factor();
-        } else {
-            // signed_factor -> factor
-            factor();
-        }
-    }
-
-    private void factor() throws ParserException {
+    private Expr factor() throws ParserException {
         // factor -> argument factor_op
-        argument();
-        factorOp();
+        Expr expr = argument();
+        return factorOp(expr);
     }
 
-    private void factorOp() throws ParserException {
+    private Expr factorOp(Expr expr) throws ParserException {
         if (lookahead.getType().getCategory() == TokenCategory.OP_POWER) {
             // factor_op -> RAISED expression
             nextToken();
-            signedFactor();
-        } else {
-            // factor_op -> EPSILON
+            Expr exponent = expression();
+            return new BinaryExpr(lookahead, expr, exponent);
         }
+        return expr;
     }
 
-    private void argument() throws ParserException {
+    private Expr argument() throws ParserException {
         if (lookahead.getType().getCategory() == TokenCategory.STD_FUNC) {
             // argument -> FUNCTION argument
             nextToken();
@@ -117,38 +99,38 @@ public class Parser {
                 throw new ParserException("Closing brackets expected and " + lookahead.getLexeme() + " found instead");
 
             nextToken();
-        } else {
-            // argument -> value
-            value();
         }
+        // argument -> value
+        return value();
     }
 
-    private void value() throws ParserException {
-        if (lookahead.getType() == TokenType.LT_NUMBER) {
+    private Expr value() throws ParserException {
+        if (lookahead.getType() == TokenType.LT_NUMBER || lookahead.getType() == TokenType.LT_STRING) {
             // argument -> NUMBER
+            Expr expr = new LiteralExpr(lookahead);
             nextToken();
-        } else if (lookahead.getType() == TokenType.LT_STRING) {
-            // argument -> STRING
-            nextToken();
+            return expr;
         } else if (lookahead.getType() == TokenType.IDENTIFIER) {
             // argument -> VARIABLE
             nextToken();
         } else {
             throw new ParserException("Unexpected symbol " + lookahead.getLexeme() + " found");
         }
+        return null;
     }
 
-    public void parse() {
+    public AST parse() {
         try {
-            expression();
+            syntaxTree.add(expression());
+            return syntaxTree;
         } catch (ParserException pe) {
             pe.printStackTrace();
         }
-
+        return null;
     }
 
     public static void main(String[] args) {
-        Lexer l = new Lexer("3 ** (1 + 1)");
+        Lexer l = new Lexer("1+1");
         var tokens = l.lex();
         Parser p = new Parser(tokens);
         p.parse();

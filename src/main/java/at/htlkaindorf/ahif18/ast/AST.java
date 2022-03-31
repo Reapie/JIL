@@ -11,6 +11,14 @@ public class AST {
 
     private Node root;
 
-    private TreeMap<String, Value> variables;
+    private TreeMap<String, Value> variables = new TreeMap<>();
+
+    public void add(Node node) {
+        root = node;
+    }
+
+    public void print() {
+        System.out.println(root.print());
+    }
 
 }

@@ -41,7 +41,7 @@ public enum TokenType {
     TK_CLOSE_BRACKET ("\\}"),
     TK_EOF(""),
 
-    LT_NUMBER ("(\\d*)\\.\\d+"),
+    LT_NUMBER ("-?\\d+(?:\\.\\d+)?"),
     LT_STRING ("\"[^\"]+\""),
     IDENTIFIER ("\\w+");
 
