@@ -78,9 +78,10 @@ public class Parser {
     private Expr factorOp(Expr expr) throws ParserException {
         if (lookahead.getType().getCategory() == TokenCategory.OP_POWER) {
             // factor_op -> RAISED expression
+            Token op = lookahead;
             nextToken();
             Expr exponent = expression();
-            return new BinaryExpr(lookahead, expr, exponent);
+            return new BinaryExpr(op, expr, exponent);
         }
         return expr;
     }
