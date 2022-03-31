@@ -19,7 +19,6 @@ public class BinaryExpr extends Expr {
 
     @Override
     public Value eval() {
-        System.out.println("BinaryExpr");
         try {
             switch (type.getType()) {
                 case TK_PLUS -> {

@@ -61,7 +61,7 @@ public class Parser {
         if (lookahead.getType().getCategory() == TokenCategory.OP_MULDIV) {
             Token op = lookahead;
             nextToken();
-            Expr prod = new BinaryExpr(op, expression, expression());
+            Expr prod = new BinaryExpr(op, expression, term());
             return termOp(prod);
         }
 

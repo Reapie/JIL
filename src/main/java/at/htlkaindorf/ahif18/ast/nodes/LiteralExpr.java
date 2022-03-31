@@ -28,7 +28,6 @@ public class LiteralExpr extends Expr {
 
     @Override
     public Value eval() {
-        System.out.println("LiteralExpr");
         return value;
     }
 

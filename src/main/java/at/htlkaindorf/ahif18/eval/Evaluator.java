@@ -20,7 +20,7 @@ public class Evaluator {
     }
 
     public static void main(String[] args) {
-        Lexer l = new Lexer("1+2*2");
+        Lexer l = new Lexer("1+2*2+1");
         var tokens = l.lex();
         Parser p = new Parser(tokens);
         var ast = p.parse();
