@@ -20,7 +20,7 @@ public class Evaluator {
     }
 
     public static void main(String[] args) {
-        String input = "-3 + 5";
+        String input = "(-3 + 5) * 'Hello'";
         System.out.println("Input: " + input);
         Lexer l = new Lexer(input);
         var tokens = l.lex();

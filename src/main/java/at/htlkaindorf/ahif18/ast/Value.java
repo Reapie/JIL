@@ -57,10 +57,14 @@ public class Value {
                 this.numValue *= other.getNumValue();
                 return this;
             }
-        }
-        if (type == TYPES.STRING && other.getType() == TYPES.NUMBER ||
-                type == TYPES.NUMBER && other.getType() == TYPES.STRING) {
+            // not very pretty but it works :)
+        } else if (type == TYPES.STRING && other.getType() == TYPES.NUMBER) {
             this.strValue = new String(new char[(int) other.getNumValue()]).replace("\0", strValue);
+            this.type = TYPES.STRING;
+            return this;
+        } else if (type == TYPES.NUMBER && other.getType() == TYPES.STRING) {
+            this.strValue = new String(new char[(int) numValue]).replace("\0", other.getStrValue());
+            this.type = TYPES.STRING;
             return this;
         }
         return new Value();
