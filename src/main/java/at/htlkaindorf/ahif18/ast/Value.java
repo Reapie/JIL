@@ -95,7 +95,7 @@ public class Value {
         return switch (type) {
             case NUMBER -> String.valueOf(numValue);
             case STRING -> String.format("\"%s\"", strValue);
-            default -> "NOVAL";
+            default -> "WTF";
         };
     }
 
