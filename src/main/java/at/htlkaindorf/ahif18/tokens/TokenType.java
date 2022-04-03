@@ -9,8 +9,8 @@ import java.util.regex.Pattern;
  */
 public enum TokenType {
 
-    TK_MINUS ("-", TokenCategory.OP_PLUSMIN),
     TK_PLUS ("\\+", TokenCategory.OP_PLUSMIN),
+    TK_MINUS ("-", TokenCategory.OP_PLUSMIN),
     TK_POW ("(\\*\\*|pow)", TokenCategory.OP_POWER),
     TK_MUL ("\\*", TokenCategory.OP_MULDIV),
     TK_DIV ("/", TokenCategory.OP_MULDIV),
@@ -41,7 +41,7 @@ public enum TokenType {
     TK_CLOSE_BRACKET ("\\}"),
     TK_EOF(""),
 
-    LT_NUMBER ("-?\\d+(?:\\.\\d+)?"),
+    LT_NUMBER ("\\d+(?:\\.\\d+)?"),
     LT_STRING ("((\")([^\"]*)(\"))|((')([^']*)('))"),
     IDENTIFIER ("\\w+");
 

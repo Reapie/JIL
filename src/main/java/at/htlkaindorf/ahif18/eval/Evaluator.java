@@ -20,12 +20,12 @@ public class Evaluator {
     }
 
     public static void main(String[] args) {
-        String input = "'Hello' * 3";
+        String input = "-3 + 5";
         System.out.println("Input: " + input);
         Lexer l = new Lexer(input);
         var tokens = l.lex();
         Parser p = new Parser(tokens);
-        var ast = p.parse();
+        AST ast = p.parse();
         Evaluator e = new Evaluator(ast);
         ast.print();
         System.out.println(e.evaluate());

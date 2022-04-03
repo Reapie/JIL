@@ -109,6 +109,17 @@ public class Parser {
             Expr expr = new LiteralExpr(lookahead);
             nextToken();
             return expr;
+        } else if (lookahead.getType() == TokenType.TK_MINUS) {
+            // number is negative
+            Token minus = lookahead;
+            nextToken();
+            Expr expr;
+            if (lookahead.getType() == TokenType.LT_NUMBER)
+                expr = new LiteralExpr(lookahead).negate();
+            else
+                throw new ParserException("Unexpected symbol " + lookahead.getLexeme() + " found");
+            nextToken();
+            return expr;
         } else if (lookahead.getType() == TokenType.IDENTIFIER) {
             // argument -> VARIABLE
             nextToken();

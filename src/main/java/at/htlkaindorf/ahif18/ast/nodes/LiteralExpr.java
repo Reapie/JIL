@@ -2,7 +2,6 @@ package at.htlkaindorf.ahif18.ast.nodes;
 
 import at.htlkaindorf.ahif18.ast.Value;
 import at.htlkaindorf.ahif18.tokens.Token;
-import at.htlkaindorf.ahif18.tokens.TokenType;
 import lombok.Data;
 
 @Data
@@ -12,18 +11,21 @@ public class LiteralExpr extends Expr {
 
     public LiteralExpr(Token token) {
         switch (token.getType()) {
-            case LT_NUMBER : {
+            case LT_NUMBER -> {
                 value = new Value(Double.parseDouble(token.getLexeme()));
-                break;
             }
-            case LT_STRING : {
+            case LT_STRING -> {
                 value = new Value(token.getLexeme());
-                break;
             }
-            default: {
+            default -> {
                 value = new Value();
             }
         }
+    }
+
+    public LiteralExpr negate() {
+        setValue(new Value(-getValue().getNumValue()));
+        return this;
     }
 
     @Override
