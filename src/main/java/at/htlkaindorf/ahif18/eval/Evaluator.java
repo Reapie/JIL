@@ -9,7 +9,7 @@ import at.htlkaindorf.ahif18.tokens.TokenType;
 
 public class Evaluator {
 
-    private AST ast;
+    private final AST ast;
 
     private Evaluator(AST ast) {
         this.ast = ast;
@@ -20,7 +20,7 @@ public class Evaluator {
     }
 
     public static void main(String[] args) {
-        String input = "1+2*2+3**2";
+        String input = "'Hello' * 3";
         System.out.println("Input: " + input);
         Lexer l = new Lexer(input);
         var tokens = l.lex();

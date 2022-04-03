@@ -1,10 +1,7 @@
 package at.htlkaindorf.ahif18.parser;
 
 import at.htlkaindorf.ahif18.ast.AST;
-import at.htlkaindorf.ahif18.ast.nodes.BinaryExpr;
-import at.htlkaindorf.ahif18.ast.nodes.Expr;
-import at.htlkaindorf.ahif18.ast.nodes.LiteralExpr;
-import at.htlkaindorf.ahif18.ast.nodes.Node;
+import at.htlkaindorf.ahif18.ast.nodes.*;
 import at.htlkaindorf.ahif18.lexer.Lexer;
 import at.htlkaindorf.ahif18.tokens.Token;
 import at.htlkaindorf.ahif18.tokens.TokenCategory;
@@ -14,12 +11,12 @@ import java.util.LinkedList;
 
 public class Parser {
 
-    private LinkedList<Token> tokens;
+    private final LinkedList<Token> tokens = new LinkedList<>();
     private Token lookahead;
     private final AST syntaxTree = new AST();
 
     public Parser(LinkedList<Token> tokens) {
-        this.tokens = (LinkedList<Token>) tokens.clone();
+        this.tokens.addAll(tokens);
         lookahead = this.tokens.getFirst();
 
     }
@@ -94,12 +91,13 @@ public class Parser {
         } else if (lookahead.getType() == TokenType.TK_OPEN) {
             // argument -> OPEN_BRACKET sum CLOSE_BRACKET
             nextToken();
-            expression();
+            Expr expr = expression();
 
             if (lookahead.getType() != TokenType.TK_CLOSE)
                 throw new ParserException("Closing brackets expected and " + lookahead.getLexeme() + " found instead");
 
             nextToken();
+            return expr;
         }
         // argument -> value
         return value();

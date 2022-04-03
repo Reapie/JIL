@@ -42,7 +42,7 @@ public enum TokenType {
     TK_EOF(""),
 
     LT_NUMBER ("-?\\d+(?:\\.\\d+)?"),
-    LT_STRING ("\"[^\"]+\""),
+    LT_STRING ("((\")([^\"]*)(\"))|((')([^']*)('))"),
     IDENTIFIER ("\\w+");
 
     private final Pattern pattern;

@@ -17,7 +17,7 @@ public class LiteralExpr extends Expr {
                 break;
             }
             case LT_STRING : {
-                value = new Value(token.getLexeme().replace("\"", ""));
+                value = new Value(token.getLexeme());
                 break;
             }
             default: {
@@ -32,7 +32,7 @@ public class LiteralExpr extends Expr {
     }
 
     @Override
-    public String print() {
+    public String toString() {
         return value.toString();
     }
 }

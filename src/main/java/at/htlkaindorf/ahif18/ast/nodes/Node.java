@@ -8,5 +8,5 @@ public abstract class Node {
 
     abstract public Value eval();
 
-    abstract public String print();
+    abstract public String toString();
 }

@@ -18,7 +18,7 @@ public class AST {
     }
 
     public void print() {
-        System.out.println(root.print());
+        System.out.println(root.toString());
     }
 
 }

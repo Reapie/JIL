@@ -47,8 +47,8 @@ public class BinaryExpr extends Expr {
     }
 
     @Override
-    public String print() {
-        return "(" + left.print() + " " + type.getLexeme() + " " + right.print() + ")";
+    public String toString() {
+        return "(" + left.toString() + " " + type.getLexeme() + " " + right.toString() + ")";
     }
 
 }

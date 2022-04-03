@@ -1,6 +1,5 @@
 package at.htlkaindorf.ahif18.ast;
 
-import at.htlkaindorf.ahif18.eval.ValueMismatchException;
 import at.htlkaindorf.ahif18.parser.ParserException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,8 +19,9 @@ public class Value {
     }
 
     public Value(String value) {
-        type = TYPES.NUMBER;
-        this.strValue = value;
+        type = TYPES.STRING;
+        // Not very nice, but it works :)
+        this.strValue = value.replace(value.substring(0, 1), "");
     }
 
     public Value() {
@@ -32,6 +32,9 @@ public class Value {
         if (type == other.getType()) {
             if (type == TYPES.NUMBER) {
                 this.numValue += other.getNumValue();
+                return this;
+            } else if (type == TYPES.STRING) {
+                strValue = strValue.concat(other.getStrValue());
                 return this;
             }
         }
@@ -54,6 +57,11 @@ public class Value {
                 this.numValue *= other.getNumValue();
                 return this;
             }
+        }
+        if (type == TYPES.STRING && other.getType() == TYPES.NUMBER ||
+                type == TYPES.NUMBER && other.getType() == TYPES.STRING) {
+            this.strValue = new String(new char[(int) other.getNumValue()]).replace("\0", strValue);
+            return this;
         }
         return new Value();
     }
@@ -80,10 +88,11 @@ public class Value {
 
     @Override
     public String toString() {
-        if (type == TYPES.NUMBER) {
-            return String.valueOf(numValue);
-        }
-        return strValue;
+        return switch (type) {
+            case NUMBER -> String.valueOf(numValue);
+            case STRING -> String.format("\"%s\"", strValue);
+            default -> "NOVAL";
+        };
     }
 
 
