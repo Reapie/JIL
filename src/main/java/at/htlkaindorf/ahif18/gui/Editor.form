@@ -35,9 +35,10 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="fe493" class="javax.swing.JTextArea" binding="textArea1" default-binding="true">
+          <component id="fe493" class="javax.swing.JTextArea" binding="codeArea">
             <constraints/>
             <properties>
+              <font/>
               <text value=""/>
             </properties>
           </component>

@@ -21,6 +21,13 @@ public class Evaluator {
         return ast.getRoot().eval();
     }
 
+    public static String pipeline(String input) {
+        Lexer l = new Lexer(input);
+        Parser p = new Parser(l.lex());
+        Evaluator e = new Evaluator(p.parse());
+        return e.evaluate().toString();
+    }
+
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         String input;
