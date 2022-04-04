@@ -31,10 +31,10 @@ public class BinaryExpr extends Expr {
                     return mul(right.eval());
                 }
                 case TK_DIV -> {
-                    return left.eval().div(right.eval());
+                    return div(right.eval());
                 }
                 case TK_POW -> {
-                    return left.eval().pow(right.eval());
+                    return pow(right.eval());
                 }
                 default -> {
                     throw new ParserException("Unknown binary operator: '" + type.getLexeme() + "'");
@@ -102,8 +102,38 @@ public class BinaryExpr extends Expr {
             double num = numValue;
             if (num < 0) {numValue = num * -1;}
             strValue = new String(new char[(int) numValue]).replace("\0", other.getStrValue());
-           
+
             return new Value(strValue);
+        }
+        return new Value();
+    }
+
+    private Value div(Value other) throws ParserException {
+
+        Value.TYPES type = left.eval().getType();
+        String strValue = left.eval().getStrValue();
+        double numValue = left.eval().getNumValue();
+
+        if (type == other.getType()) {
+            if (type == Value.TYPES.NUMBER) {
+                numValue /= other.getNumValue();
+                return new Value(numValue);
+            }
+        }
+        return new Value();
+    }
+
+    public Value pow(Value other) throws ParserException {
+
+        Value.TYPES type = left.eval().getType();
+        String strValue = left.eval().getStrValue();
+        double numValue = left.eval().getNumValue();
+
+        if (type == other.getType()) {
+            if (type == Value.TYPES.NUMBER) {
+                numValue = Math.pow(numValue, other.getNumValue());
+                return new Value(numValue);
+            }
         }
         return new Value();
     }
