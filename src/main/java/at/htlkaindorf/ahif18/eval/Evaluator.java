@@ -29,13 +29,15 @@ public class Evaluator {
         Evaluator e;
         try {
             do {
-                System.out.println("Enter the expression to evaluate:");
+                System.out.println("Enter the expression to evaluate (END to exit):");
                 input = scan.nextLine();
+                if ("END".equals(input))
+                    break;
                 l = new Lexer(input);
                 p = new Parser(l.lex());
                 e = new Evaluator(p.parse());
                 System.out.println(e.evaluate());
-            } while(!"END".equals(input));
+            } while(true);
         } catch (Exception ignored) {}
     }
 }
