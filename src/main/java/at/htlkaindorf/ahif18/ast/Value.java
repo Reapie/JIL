@@ -57,10 +57,18 @@ public class Value {
                 this.numValue *= other.getNumValue();
                 return this;
             }
-        }
-        if (type == TYPES.STRING && other.getType() == TYPES.NUMBER ||
-                type == TYPES.NUMBER && other.getType() == TYPES.STRING) {
+            // not very pretty but it works :)
+        } else if (type == TYPES.STRING && other.getType() == TYPES.NUMBER) {
+            double num = other.getNumValue();
+            if (num < 0) {other.setNumValue(num * -1);}
             this.strValue = new String(new char[(int) other.getNumValue()]).replace("\0", strValue);
+            this.type = TYPES.STRING;
+            return this;
+        } else if (type == TYPES.NUMBER && other.getType() == TYPES.STRING) {
+            double num = numValue;
+            if (num < 0) {numValue = num * -1;}
+            this.strValue = new String(new char[(int) numValue]).replace("\0", other.getStrValue());
+            this.type = TYPES.STRING;
             return this;
         }
         return new Value();
@@ -91,7 +99,7 @@ public class Value {
         return switch (type) {
             case NUMBER -> String.valueOf(numValue);
             case STRING -> String.format("\"%s\"", strValue);
-            default -> "NOVAL";
+            default -> "WTF";
         };
     }
 

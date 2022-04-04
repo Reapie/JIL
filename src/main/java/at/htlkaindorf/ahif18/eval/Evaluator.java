@@ -7,6 +7,8 @@ import at.htlkaindorf.ahif18.lexer.Lexer;
 import at.htlkaindorf.ahif18.parser.Parser;
 import at.htlkaindorf.ahif18.tokens.TokenType;
 
+import java.util.Scanner;
+
 public class Evaluator {
 
     private final AST ast;
@@ -20,15 +22,20 @@ public class Evaluator {
     }
 
     public static void main(String[] args) {
-        String input = "'Hello' * 3";
-        System.out.println("Input: " + input);
-        Lexer l = new Lexer(input);
-        var tokens = l.lex();
-        Parser p = new Parser(tokens);
-        var ast = p.parse();
-        Evaluator e = new Evaluator(ast);
-        ast.print();
-        System.out.println(e.evaluate());
+        Scanner scan = new Scanner(System.in);
+        String input;
+        Lexer l;
+        Parser p;
+        Evaluator e;
+        try {
+            do {
+                System.out.println("Enter the expression to evaluate:");
+                input = scan.nextLine();
+                l = new Lexer(input);
+                p = new Parser(l.lex());
+                e = new Evaluator(p.parse());
+                System.out.println(e.evaluate());
+            } while(!"END".equals(input));
+        } catch (Exception ignored) {}
     }
-
 }
