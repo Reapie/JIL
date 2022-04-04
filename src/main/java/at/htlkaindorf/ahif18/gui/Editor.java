@@ -14,12 +14,13 @@ import java.awt.event.KeyEvent;
 public class Editor {
 
     private JPanel mainPanel;
-    private JEditorPane console;
+    private JTextArea console;
     private JButton btnFile;
     private JButton RUN;
     private JTextArea codeArea;
     private JScrollPane jsp;
-    private  JTextArea lines;
+    private JPanel consoleContainer;
+    private final JTextArea lines;
 
     public Editor() {
         RUN.addActionListener(actionEvent -> run());
@@ -30,6 +31,9 @@ public class Editor {
                     run();
             }
         });
+
+        // Setup for line count
+
         codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         console.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
         lines = new JTextArea("1");
@@ -37,23 +41,20 @@ public class Editor {
         lines.setEditable(false);
         lines.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
 
-
         codeArea.getDocument().addDocumentListener(new DocumentListener() {
             public String getText(){
                 int caretPosition = codeArea.getDocument().getLength();
                 Element root = codeArea.getDocument().getDefaultRootElement();
-                String text = "1" + System.getProperty("line.separator");
+                StringBuilder text = new StringBuilder("1" + System.getProperty("line.separator"));
 
                 for(int i = 2; i < root.getElementIndex(caretPosition) + 2; i++) {
-                    text += i + System.getProperty("line.separator");
+                    text.append(i).append(System.getProperty("line.separator"));
                 }
-
-                return text;
+                return text.toString();
             }
             @Override
             public void insertUpdate(DocumentEvent e) {
-                    lines.setText(getText());
-
+                lines.setText(getText());
             }
 
             @Override
@@ -66,10 +67,8 @@ public class Editor {
                 lines.setText(getText());
             }
         });
-
-
+        lines.setColumns(3);
         jsp.setRowHeaderView(lines);
-
     }
 
     public static void main(String[] args) {
@@ -87,6 +86,4 @@ public class Editor {
         String output = Evaluator.pipeline(codeArea.getText());
         console.setText(output);
     }
-
-
 }

@@ -40,7 +40,7 @@ public class Parser {
             // bool_op -> COMPAR
             Token op = lookahead;
             nextToken();
-            return new BinaryExpr(op, expr, sum());
+            return new BinaryExpr(op, expr, expression());
         }
         return expr;
     }
@@ -54,7 +54,7 @@ public class Parser {
             // sum_op -> PLUSMINUS term sum_op
             Token op = lookahead;
             nextToken();
-            return new BinaryExpr(op, expr, term());
+            return new BinaryExpr(op, expr, sum());
         }
         return expr;
     }
@@ -69,7 +69,7 @@ public class Parser {
         if (lookahead.getType().getCategory() == TokenCategory.OP_MULDIV) {
             Token op = lookahead;
             nextToken();
-            Expr prod = new BinaryExpr(op, expression, power());
+            Expr prod = new BinaryExpr(op, expression, term());
             return termOp(prod);
         }
 
@@ -87,7 +87,7 @@ public class Parser {
             // factor_op -> RAISED expression
             Token op = lookahead;
             nextToken();
-            return new BinaryExpr(op, expr, argument());
+            return new BinaryExpr(op, expr, power());
         }
         return expr;
     }
