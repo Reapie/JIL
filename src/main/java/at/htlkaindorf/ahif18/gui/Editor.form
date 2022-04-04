@@ -30,12 +30,12 @@
           </component>
         </children>
       </toolbar>
-      <scrollpane id="14317">
+      <scrollpane id="14317" binding="jsp">
         <constraints border-constraint="Center"/>
         <properties/>
         <border type="none"/>
         <children>
-          <component id="fe493" class="javax.swing.JTextArea" binding="codeArea">
+          <component id="fe493" class="javax.swing.JTextArea" binding="codeArea" custom-create="true">
             <constraints/>
             <properties>
               <font/>
