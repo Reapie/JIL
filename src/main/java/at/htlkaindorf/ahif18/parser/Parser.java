@@ -18,7 +18,6 @@ public class Parser {
     public Parser(LinkedList<Token> tokens) {
         this.tokens.addAll(tokens);
         lookahead = this.tokens.getFirst();
-
     }
 
     private void nextToken() {
@@ -33,8 +32,21 @@ public class Parser {
 
     private Expr expression() throws ParserException {
         // expression -> signed_term sum_op
-        Expr expr = term();
-        return sumOp(expr);
+        return boolOp(sum());
+    }
+
+    private Expr boolOp(Expr expr) throws ParserException {
+        if (lookahead.getType().getCategory() == TokenCategory.OP_COMPAR) {
+            // bool_op -> COMPAR
+            Token op = lookahead;
+            nextToken();
+            return new BinaryExpr(op, expr, expression());
+        }
+        return expr;
+    }
+
+    private Expr sum() throws ParserException {
+        return sumOp(term());
     }
 
     private Expr sumOp(Expr expr) throws ParserException {
@@ -42,15 +54,14 @@ public class Parser {
             // sum_op -> PLUSMINUS term sum_op
             Token op = lookahead;
             nextToken();
-            BinaryExpr add = new BinaryExpr(op, expr, expression());
-            return add;
+            return new BinaryExpr(op, expr, expression());
         }
         return expr;
     }
 
     private Expr term() throws ParserException {
         // term -> factor term_op
-        return termOp(factor());
+        return termOp(power());
     }
 
     private Expr termOp(Expr expression) throws ParserException {
@@ -66,13 +77,12 @@ public class Parser {
         return expression;
     }
 
-    private Expr factor() throws ParserException {
+    private Expr power() throws ParserException {
         // factor -> argument factor_op
-        Expr expr = argument();
-        return factorOp(expr);
+        return powerOp(argument());
     }
 
-    private Expr factorOp(Expr expr) throws ParserException {
+    private Expr powerOp(Expr expr) throws ParserException {
         if (lookahead.getType().getCategory() == TokenCategory.OP_POWER) {
             // factor_op -> RAISED expression
             Token op = lookahead;
@@ -104,14 +114,16 @@ public class Parser {
     }
 
     private Expr value() throws ParserException {
-        if (lookahead.getType() == TokenType.LT_NUMBER || lookahead.getType() == TokenType.LT_STRING) {
+        if (lookahead.getType() == TokenType.LT_NUMBER ||
+                lookahead.getType() == TokenType.LT_STRING ||
+                lookahead.getType() == TokenType.LT_BOOL) {
             // argument -> NUMBER
             Expr expr = new LiteralExpr(lookahead);
             nextToken();
             return expr;
         } else if (lookahead.getType() == TokenType.TK_MINUS) {
             // number is negative
-            Token minus = lookahead;
+            //Token minus = lookahead;
             nextToken();
             Expr expr;
             if (lookahead.getType() == TokenType.LT_NUMBER)

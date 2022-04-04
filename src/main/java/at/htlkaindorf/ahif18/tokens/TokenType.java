@@ -18,10 +18,10 @@ public enum TokenType {
     TK_NOT ("(!|not)", TokenCategory.OP_BOOL),
     TK_AND ("(&&|and)", TokenCategory.OP_BOOL),
     TK_OR ("(\\|\\||or)", TokenCategory.OP_BOOL),
-    TK_LESS ("<", TokenCategory.OP_COMPAR),
     TK_LEG ("<=", TokenCategory.OP_COMPAR),
-    TK_GT (">", TokenCategory.OP_COMPAR),
+    TK_LESS ("<", TokenCategory.OP_COMPAR),
     TK_GEQ (">=", TokenCategory.OP_COMPAR),
+    TK_GT (">", TokenCategory.OP_COMPAR),
     TK_EQ ("==", TokenCategory.OP_COMPAR),
     TK_DIFFERENT ("!=", TokenCategory.OP_COMPAR),
     TK_ASSIGN ("="),
@@ -41,6 +41,7 @@ public enum TokenType {
     TK_CLOSE_BRACKET ("\\}"),
     TK_EOF(""),
 
+    LT_BOOL ("true|false"),
     LT_NUMBER ("\\d+(?:\\.\\d+)?"),
     LT_STRING ("((\")([^\"]*)(\"))|((')([^']*)('))"),
     IDENTIFIER ("\\w+");

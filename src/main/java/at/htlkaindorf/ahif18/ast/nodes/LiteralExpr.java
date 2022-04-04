@@ -15,7 +15,10 @@ public class LiteralExpr extends Expr {
                 value = new Value(Double.parseDouble(token.getLexeme()));
             }
             case LT_STRING -> {
-                value = new Value(token.getLexeme());
+                value = new Value(token.getLexeme(), true);
+            }
+            case LT_BOOL -> {
+                value = new Value(Boolean.parseBoolean(token.getLexeme()));
             }
             default -> {
                 value = new Value();
