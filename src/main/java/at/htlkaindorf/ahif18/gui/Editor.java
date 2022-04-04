@@ -5,9 +5,10 @@ import javax.swing.*;
 public class Editor {
 
     private JPanel mainPanel;
-    private JEditorPane editor;
     private JEditorPane console;
     private JButton btnFile;
+    private JButton RUN;
+    private JTextArea textArea1;
 
     public static void main(String[] args) {
         JFrame frame = new JFrame("Editor");
