@@ -15,10 +15,10 @@ import java.util.Set;
 public class Lexer {
 
     private Token token;
-    private Set<Character> blankChars = new HashSet<Character>();
+    private final Set<Character> blankChars = new HashSet<Character>();
     private boolean done = false;
-    private int pos = 0;
-    private StringBuilder input; // String Builder gives us more methods than String
+    private final int pos = 0;
+    private final StringBuilder input; // String Builder gives us more methods than String
     private String originalInput;
     private String errorMessage = "";
     private int currentLine = 1;
