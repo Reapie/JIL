@@ -22,19 +22,19 @@ public class BinaryExpr extends Expr {
         try {
             switch (type.getType()) {
                 case TK_PLUS -> {
-                    return add(right.eval());
+                    return add();
                 }
                 case TK_MINUS -> {
-                    return sub(right.eval());
+                    return sub();
                 }
                 case TK_MUL -> {
-                    return mul(right.eval());
+                    return mul();
                 }
                 case TK_DIV -> {
-                    return div(right.eval());
+                    return div();
                 }
                 case TK_POW -> {
-                    return pow(right.eval());
+                    return pow();
                 }
                 default -> {
                     throw new ParserException("Unknown binary operator: '" + type.getLexeme() + "'");
@@ -48,91 +48,84 @@ public class BinaryExpr extends Expr {
 
     }
 
-    private Value add(Value other) throws ParserException {
+    private Value add() throws ParserException {
 
-        Value.TYPES type = left.eval().getType();
-        String strValue = left.eval().getStrValue();
-        double numValue = left.eval().getNumValue();
+        Value leftVal = left.eval();
+        Value rightVal = right.eval();
 
-        if (type == other.getType()) {
-            if (type == Value.TYPES.NUMBER) {
-                numValue+= right.eval().getNumValue();
-                return new Value(numValue);
-            } else if (type == Value.TYPES.STRING) {
-                strValue = strValue.concat(other.getStrValue());
-                return new Value(strValue);
+        if (leftVal.getType() == rightVal.getType()) {
+            if (leftVal.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftVal.getNumValue() + rightVal.getNumValue());
+            } else if (leftVal.getType() == Value.TYPES.STRING) {
+                String newVal = leftVal.getStrValue().concat(rightVal.getStrValue());
+                return new Value(newVal);
             }
         }
         return new Value();
     }
 
-    private Value sub(Value other) throws ParserException {
-        Value.TYPES type = left.eval().getType();
-        String strValue = left.eval().getStrValue();
-        double numValue = left.eval().getNumValue();
+    private Value sub() throws ParserException {
 
-        if (type == other.getType()) {
-            if (type == Value.TYPES.NUMBER) {
-                numValue -= other.getNumValue();
-                return new Value(numValue);
+        Value leftVal = left.eval();
+        Value rightVal = right.eval();
+
+        if (leftVal.getType() == rightVal.getType()) {
+            if (leftVal.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftVal.getNumValue() - rightVal.getNumValue());
             }
         }
         return new Value();
     }
 
-    private Value mul(Value other) throws ParserException {
+    private Value mul() throws ParserException {
 
-        Value.TYPES type = left.eval().getType();
-        String strValue = left.eval().getStrValue();
-        double numValue = left.eval().getNumValue();
+        Value leftVal = left.eval();
+        Value rightVal = right.eval();
 
-        if (type == other.getType()) {
-            if (type == Value.TYPES.NUMBER) {
-                numValue *= other.getNumValue();
-                return new Value(numValue);
+        if (leftVal.getType() == rightVal.getType()) {
+            if (leftVal.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftVal.getNumValue() * rightVal.getNumValue());
             }
             // not very pretty but it works :)
-        } else if (type == Value.TYPES.STRING && other.getType() == Value.TYPES.NUMBER) {
-            double num = other.getNumValue();
-            if (num < 0) {other.setNumValue(num * -1);}
-            strValue = new String(new char[(int) other.getNumValue()]).replace("\0", strValue);
-
+        } else if (leftVal.getType() == Value.TYPES.STRING && rightVal.getType() == Value.TYPES.NUMBER) {
+            double num = rightVal.getNumValue();
+            // dont allow string multiplication with negative numbers
+            if (num < 0) {rightVal.setNumValue(num * -1);}
+            String strValue = new String(new char[(int) rightVal.getNumValue()])
+                    .replace("\0", leftVal.getStrValue());
             return new Value(strValue);
-        } else if (type == Value.TYPES.NUMBER && other.getType() == Value.TYPES.STRING) {
-            double num = numValue;
-            if (num < 0) {numValue = num * -1;}
-            strValue = new String(new char[(int) numValue]).replace("\0", other.getStrValue());
-
+        } else if (leftVal.getType() == Value.TYPES.NUMBER && rightVal.getType() == Value.TYPES.STRING) {
+            double num = leftVal.getNumValue();
+            // dont allow string multiplication with negative numbers
+            if (num < 0) {leftVal.setNumValue(num * -1);}
+            String strValue = new String(new char[(int) leftVal.getNumValue()])
+                    .replace("\0", rightVal.getStrValue());
             return new Value(strValue);
         }
         return new Value();
     }
 
-    private Value div(Value other) throws ParserException {
+    private Value div() throws ParserException {
 
-        Value.TYPES type = left.eval().getType();
-        String strValue = left.eval().getStrValue();
-        double numValue = left.eval().getNumValue();
+        Value leftVal = left.eval();
+        Value rightVal = right.eval();
 
-        if (type == other.getType()) {
-            if (type == Value.TYPES.NUMBER) {
-                numValue /= other.getNumValue();
-                return new Value(numValue);
+        if (leftVal.getType() == rightVal.getType()) {
+            if (leftVal.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftVal.getNumValue() / rightVal.getNumValue());
             }
         }
         return new Value();
     }
 
-    public Value pow(Value other) throws ParserException {
+    public Value pow() throws ParserException {
 
-        Value.TYPES type = left.eval().getType();
-        String strValue = left.eval().getStrValue();
-        double numValue = left.eval().getNumValue();
+        Value leftVal = left.eval();
+        Value rightVal = right.eval();
 
-        if (type == other.getType()) {
-            if (type == Value.TYPES.NUMBER) {
-                numValue = Math.pow(numValue, other.getNumValue());
-                return new Value(numValue);
+        if (leftVal.getType() == rightVal.getType()) {
+            if (leftVal.getType() == Value.TYPES.NUMBER) {
+                return new Value(Math.pow(leftVal.getNumValue(), rightVal.getNumValue()));
             }
         }
         return new Value();
