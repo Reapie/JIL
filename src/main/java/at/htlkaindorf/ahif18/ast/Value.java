@@ -7,91 +7,38 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Value {
-    public enum TYPES {NUMBER, STRING, DEFAULT};
+
+    public enum TYPES {NUMBER, STRING, BOOL, DEFAULT};
 
     private TYPES type;
     private double numValue = 0;
     private String strValue = "";
+    private boolean boolValue = false;
 
     public Value(Double value) {
         type = TYPES.NUMBER;
         this.numValue = value;
     }
 
-    public Value(String value) {
+    public Value(String value, boolean sanitize) {
         type = TYPES.STRING;
         // Not very nice, but it works :)
-        this.strValue = value.replace(value.substring(0, 1), "");
+        if (sanitize)
+            this.strValue = value.replace(value.substring(0, 1), "");
+    }
+
+    public Value(boolean value) {
+        type = TYPES.BOOL;
+        this.boolValue = value;
     }
 
     public Value() {
         type = TYPES.DEFAULT;
     }
 
-    public Value add(Value other) throws ParserException {
-        if (type == other.getType()) {
-            if (type == TYPES.NUMBER) {
-                this.numValue += other.getNumValue();
-                return this;
-            } else if (type == TYPES.STRING) {
-                strValue = strValue.concat(other.getStrValue());
-                return this;
-            }
-        }
-        return new Value();
-    }
-
-    public Value sub(Value other) throws ParserException {
-        if (type == other.getType()) {
-            if (type == TYPES.NUMBER) {
-                this.numValue -= other.getNumValue();
-                return this;
-            }
-        }
-        return new Value();
-    }
-
-    public Value mul(Value other) throws ParserException {
-        if (type == other.getType()) {
-            if (type == TYPES.NUMBER) {
-                this.numValue *= other.getNumValue();
-                return this;
-            }
-            // not very pretty but it works :)
-        } else if (type == TYPES.STRING && other.getType() == TYPES.NUMBER) {
-            double num = other.getNumValue();
-            if (num < 0) {other.setNumValue(num * -1);}
-            this.strValue = new String(new char[(int) other.getNumValue()]).replace("\0", strValue);
-            this.type = TYPES.STRING;
-            return this;
-        } else if (type == TYPES.NUMBER && other.getType() == TYPES.STRING) {
-            double num = numValue;
-            if (num < 0) {numValue = num * -1;}
-            this.strValue = new String(new char[(int) numValue]).replace("\0", other.getStrValue());
-            this.type = TYPES.STRING;
-            return this;
-        }
-        return new Value();
-    }
-
-    public Value div(Value other) throws ParserException {
-        if (type == other.getType()) {
-            if (type == TYPES.NUMBER) {
-                this.numValue /= other.getNumValue();
-                return this;
-            }
-        }
-        return new Value();
-    }
-
-    public Value pow(Value other) throws ParserException {
-        if (type == other.getType()) {
-            if (type == TYPES.NUMBER) {
-                this.numValue = Math.pow(this.numValue, other.getNumValue());
-                return this;
-            }
-        }
-        return new Value();
+    // Convenience for getting the bool because I dont like "isBoolValue"
+    public boolean getBoolValue() {
+        return boolValue;
     }
 
     @Override
@@ -99,6 +46,7 @@ public class Value {
         return switch (type) {
             case NUMBER -> String.valueOf(numValue);
             case STRING -> String.format("\"%s\"", strValue);
+            case BOOL -> String.valueOf(boolValue);
             default -> "WTF";
         };
     }

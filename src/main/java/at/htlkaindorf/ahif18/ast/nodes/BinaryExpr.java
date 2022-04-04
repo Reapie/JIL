@@ -10,11 +10,14 @@ public class BinaryExpr extends Expr {
 
     private Token type;
     private Expr left, right;
+    private Value leftV, rightV;
 
     public BinaryExpr(Token type, Expr left, Expr right) {
         this.type = type;
         this.left = left;
         this.right = right;
+        leftV = left.eval();
+        rightV = right.eval();
     }
 
     @Override
@@ -36,6 +39,21 @@ public class BinaryExpr extends Expr {
                 case TK_POW -> {
                     return pow();
                 }
+                case TK_LESS -> {
+                    return less();
+                }
+                case TK_GT -> {
+                    return greater();
+                }
+                case TK_LEG -> {
+                    return lessEqual();
+                }
+                case TK_GEQ -> {
+                    return greaterEqual();
+                }
+                case TK_EQ -> {
+                    return equal();
+                }
                 default -> {
                     throw new ParserException("Unknown binary operator: '" + type.getLexeme() + "'");
                 }
@@ -44,88 +62,131 @@ public class BinaryExpr extends Expr {
             e.printStackTrace();
             return new Value();
         }
-
-
     }
 
+    // BASIC MATH
+
     private Value add() throws ParserException {
-
-        Value leftVal = left.eval();
-        Value rightVal = right.eval();
-
-        if (leftVal.getType() == rightVal.getType()) {
-            if (leftVal.getType() == Value.TYPES.NUMBER) {
-                return new Value(leftVal.getNumValue() + rightVal.getNumValue());
-            } else if (leftVal.getType() == Value.TYPES.STRING) {
-                String newVal = leftVal.getStrValue().concat(rightVal.getStrValue());
-                return new Value(newVal);
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() + rightV.getNumValue());
+            } else if (leftV.getType() == Value.TYPES.STRING) {
+                String strValue = leftV.getStrValue().concat(rightV.getStrValue());
+                return new Value(strValue, false);
             }
         }
         return new Value();
     }
 
     private Value sub() throws ParserException {
-
-        Value leftVal = left.eval();
-        Value rightVal = right.eval();
-
-        if (leftVal.getType() == rightVal.getType()) {
-            if (leftVal.getType() == Value.TYPES.NUMBER) {
-                return new Value(leftVal.getNumValue() - rightVal.getNumValue());
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() - rightV.getNumValue());
             }
         }
         return new Value();
     }
 
     private Value mul() throws ParserException {
-
-        Value leftVal = left.eval();
-        Value rightVal = right.eval();
-
-        if (leftVal.getType() == rightVal.getType()) {
-            if (leftVal.getType() == Value.TYPES.NUMBER) {
-                return new Value(leftVal.getNumValue() * rightVal.getNumValue());
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() * rightV.getNumValue());
             }
             // not very pretty but it works :)
-        } else if (leftVal.getType() == Value.TYPES.STRING && rightVal.getType() == Value.TYPES.NUMBER) {
-            double num = rightVal.getNumValue();
+        } else if (leftV.getType() == Value.TYPES.STRING && rightV.getType() == Value.TYPES.NUMBER) {
+            double num = rightV.getNumValue();
             // dont allow string multiplication with negative numbers
-            if (num < 0) {rightVal.setNumValue(num * -1);}
-            String strValue = new String(new char[(int) rightVal.getNumValue()])
-                    .replace("\0", leftVal.getStrValue());
-            return new Value(strValue);
-        } else if (leftVal.getType() == Value.TYPES.NUMBER && rightVal.getType() == Value.TYPES.STRING) {
-            double num = leftVal.getNumValue();
+            if (num < 0) {
+                rightV.setNumValue(num * -1);
+            }
+            String strValue = new String(new char[(int) rightV.getNumValue()])
+                    .replace("\0", leftV.getStrValue());
+            return new Value(strValue, false);
+        } else if (leftV.getType() == Value.TYPES.NUMBER && rightV.getType() == Value.TYPES.STRING) {
+            double num = leftV.getNumValue();
             // dont allow string multiplication with negative numbers
-            if (num < 0) {leftVal.setNumValue(num * -1);}
-            String strValue = new String(new char[(int) leftVal.getNumValue()])
-                    .replace("\0", rightVal.getStrValue());
-            return new Value(strValue);
+            if (num < 0) {
+                leftV.setNumValue(num * -1);
+            }
+            String strValue = new String(new char[(int) leftV.getNumValue()])
+                    .replace("\0", rightV.getStrValue());
+            return new Value(strValue, false);
         }
         return new Value();
     }
 
     private Value div() throws ParserException {
-
-        Value leftVal = left.eval();
-        Value rightVal = right.eval();
-
-        if (leftVal.getType() == rightVal.getType()) {
-            if (leftVal.getType() == Value.TYPES.NUMBER) {
-                return new Value(leftVal.getNumValue() / rightVal.getNumValue());
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() / rightV.getNumValue());
             }
         }
         return new Value();
     }
 
     public Value pow() throws ParserException {
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(Math.pow(leftV.getNumValue(), rightV.getNumValue()));
+            }
+        }
+        return new Value();
+    }
 
-        Value leftVal = left.eval();
-        Value rightVal = right.eval();
+    // BOOLEANS AND COMPARISONS
 
-        if (leftVal.getType() == rightVal.getType()) {
-            if (leftVal.getType() == Value.TYPES.NUMBER) {
-                return new Value(Math.pow(leftVal.getNumValue(), rightVal.getNumValue()));
+    private Value less() throws ParserException {
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() < rightV.getNumValue());
+            } else if (leftV.getType() == Value.TYPES.STRING) {
+                return new Value(leftV.getStrValue().compareTo(rightV.getStrValue()) < 0);
+            }
+        }
+        return new Value();
+    }
+
+    private Value greater() throws ParserException {
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() > rightV.getNumValue());
+            } else if (leftV.getType() == Value.TYPES.STRING) {
+                return new Value(leftV.getStrValue().compareTo(rightV.getStrValue()) > 0);
+            }
+        }
+        return new Value();
+    }
+
+    private Value lessEqual() throws ParserException {
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() <= rightV.getNumValue());
+            } else if (leftV.getType() == Value.TYPES.STRING) {
+                return new Value(leftV.getStrValue().compareTo(rightV.getStrValue()) <= 0);
+            }
+        }
+        return new Value();
+    }
+
+    private Value greaterEqual() throws ParserException {
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() >= rightV.getNumValue());
+            } else if (leftV.getType() == Value.TYPES.STRING) {
+                return new Value(leftV.getStrValue().compareTo(rightV.getStrValue()) >= 0);
+            }
+        }
+        return new Value();
+    }
+
+    private Value equal() throws ParserException {
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() == rightV.getNumValue());
+            } else if (leftV.getType() == Value.TYPES.STRING) {
+                return new Value(leftV.getStrValue().equals(rightV.getStrValue()));
+            } else if (leftV.getType() == Value.TYPES.BOOL) {
+                return new Value(leftV.getBoolValue() == rightV.getBoolValue());
             }
         }
         return new Value();
