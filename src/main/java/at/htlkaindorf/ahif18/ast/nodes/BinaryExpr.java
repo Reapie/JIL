@@ -54,6 +54,9 @@ public class BinaryExpr extends Expr {
                 case TK_EQ -> {
                     return equal();
                 }
+                case TK_NOTEQ -> {
+                    return notEqual();
+                }
                 default -> {
                     throw new ParserException("Unknown binary operator: '" + type.getLexeme() + "'");
                 }
@@ -187,6 +190,19 @@ public class BinaryExpr extends Expr {
                 return new Value(leftV.getStrValue().equals(rightV.getStrValue()));
             } else if (leftV.getType() == Value.TYPES.BOOL) {
                 return new Value(leftV.getBoolValue() == rightV.getBoolValue());
+            }
+        }
+        return new Value();
+    }
+
+    private Value notEqual() throws ParserException {
+        if (leftV.getType() == rightV.getType()) {
+            if (leftV.getType() == Value.TYPES.NUMBER) {
+                return new Value(leftV.getNumValue() != rightV.getNumValue());
+            } else if (leftV.getType() == Value.TYPES.STRING) {
+                return new Value(!leftV.getStrValue().equals(rightV.getStrValue()));
+            } else if (leftV.getType() == Value.TYPES.BOOL) {
+                return new Value(leftV.getBoolValue() != rightV.getBoolValue());
             }
         }
         return new Value();

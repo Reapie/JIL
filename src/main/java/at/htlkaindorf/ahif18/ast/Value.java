@@ -47,7 +47,7 @@ public class Value {
             case NUMBER -> String.valueOf(numValue);
             case STRING -> String.format("\"%s\"", strValue);
             case BOOL -> String.valueOf(boolValue);
-            default -> "WTF";
+            default -> "NOVAL";
         };
     }
 
