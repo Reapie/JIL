@@ -6,10 +6,11 @@ import com.formdev.flatlaf.FlatIntelliJLaf;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.Element;
+import javax.swing.text.*;
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.Arrays;
 
 public class Editor {
 
@@ -17,10 +18,11 @@ public class Editor {
     private JTextArea console;
     private JButton btnFile;
     private JButton RUN;
-    private JTextArea codeArea;
+    private JTextPane codeArea;
     private JScrollPane jsp;
     private JPanel consoleContainer;
     private final JTextArea lines;
+
 
     public Editor() {
         RUN.addActionListener(actionEvent -> run());
@@ -32,10 +34,54 @@ public class Editor {
             }
         });
 
-        // Setup for line count
+        final StyleContext cont = StyleContext.getDefaultStyleContext();
+        final AttributeSet attr = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.RED);
+        final AttributeSet attrBlack = cont.addAttribute(cont.getEmptySet(), StyleConstants.Foreground, Color.BLACK);
+
+        DefaultStyledDocument doc = new DefaultStyledDocument() {
+
+            public void insertString (int offset, String str, AttributeSet a) throws BadLocationException {
+                super.insertString(offset, str, a);
+
+                String text = getText(0, getLength());
+                int before = findLastNonWordChar(text, offset);
+                if (before < 0) before = 0;
+                int after = findFirstNonWordChar(text, offset + str.length());
+                int wordL = before;
+                int wordR = before;
+
+                while (wordR <= after) {
+                    if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
+                        if (text.substring(wordL, wordR).matches("(\\W)*(var|null)"))
+                            setCharacterAttributes(wordL, wordR - wordL, attr, false);
+                        else
+                            setCharacterAttributes(wordL, wordR - wordL, attrBlack, false);
+                        wordL = wordR;
+                    }
+                    wordR++;
+                }
+            }
+
+            public void remove (int offs, int len) throws BadLocationException {
+                super.remove(offs, len);
+
+                String text = getText(0, getLength());
+                int before = findLastNonWordChar(text, offs);
+                if (before < 0) before = 0;
+                int after = findFirstNonWordChar(text, offs);
+
+                if (text.substring(before, after).matches("(\\W)*(private|public|protected)")) {
+                    setCharacterAttributes(before, after - before, attr, false);
+                } else {
+                    setCharacterAttributes(before, after - before, attrBlack, false);
+                }
+            }
+        };
 
         codeArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+        codeArea.setStyledDocument(doc);
         console.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 14));
+
         lines = new JTextArea("1");
         lines.setBackground(Color.LIGHT_GRAY);
         lines.setEditable(false);
@@ -85,5 +131,24 @@ public class Editor {
     public void run () {
         String output = Evaluator.pipeline(codeArea.getText());
         console.setText(output);
+    }
+
+    private int findLastNonWordChar (String text, int index) {
+        while (--index >= 0) {
+            if (String.valueOf(text.charAt(index)).matches("\\W")) {
+                break;
+            }
+        }
+        return index;
+    }
+
+    private int findFirstNonWordChar (String text, int index) {
+        while (index < text.length()) {
+            if (String.valueOf(text.charAt(index)).matches("\\W")) {
+                break;
+            }
+            index++;
+        }
+        return index;
     }
 }

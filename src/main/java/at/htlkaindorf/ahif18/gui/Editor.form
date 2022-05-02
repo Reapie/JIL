@@ -31,7 +31,7 @@
         <properties/>
         <border type="none"/>
         <children>
-          <component id="fe493" class="javax.swing.JTextArea" binding="codeArea">
+          <component id="fe493" class="javax.swing.JTextPane" binding="codeArea">
             <constraints/>
             <properties>
               <focusable value="true"/>
