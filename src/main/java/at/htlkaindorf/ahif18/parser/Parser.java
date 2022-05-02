@@ -95,8 +95,9 @@ public class Parser {
     private Expr argument() throws ParserException {
         if (lookahead.getType().getCategory() == TokenCategory.STD_FUNC) {
             // argument -> FUNCTION argument
+            Token identifier = lookahead;
             nextToken();
-            argument();
+            return new FunctionExpr(identifier, argument());
         } else if (lookahead.getType() == TokenType.TK_OPEN) {
             // argument -> OPEN_BRACKET sum CLOSE_BRACKET
             nextToken();
@@ -132,7 +133,7 @@ public class Parser {
             nextToken();
             return expr;
         } else if (lookahead.getType() == TokenType.IDENTIFIER) {
-            // argument -> VARIABLE
+            // argument -> VARIABLE OR CUSTOM FUNCTION
             nextToken();
         } else {
             throw new ParserException("Unexpected symbol " + lookahead.getLexeme() + " found");
@@ -151,10 +152,10 @@ public class Parser {
     }
 
     public static void main(String[] args) {
-        Lexer l = new Lexer("1+1");
+        Lexer l = new Lexer("\"Hello\" + \"World\"");
         var tokens = l.lex();
         Parser p = new Parser(tokens);
-        p.parse();
+        p.parse().print();
     }
 
 }

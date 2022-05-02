@@ -37,6 +37,15 @@ public enum TokenType {
     TK_KEY_ENDIF ("endif"),
     TK_KEY_VAR("var"),
     TK_KEY_CONST("const"),
+
+    TK_STD_PYTAG("pytag", TokenCategory.STD_FUNC),
+    TK_STD_SQRT("sqrt", TokenCategory.STD_FUNC),
+    TK_STD_SIN("sin", TokenCategory.STD_FUNC),
+    TK_STD_COS("cos", TokenCategory.STD_FUNC),
+    TK_STD_TAN("tan", TokenCategory.STD_FUNC),
+    TK_STD_FLOOR("floor", TokenCategory.STD_FUNC),
+    TK_STD_CEIL("ceil", TokenCategory.STD_FUNC),
+
     TK_OPEN_BRACKET ("\\{"),
     TK_CLOSE_BRACKET ("\\}"),
     TK_EOF(""),
