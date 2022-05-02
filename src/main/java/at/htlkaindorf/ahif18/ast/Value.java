@@ -25,6 +25,8 @@ public class Value {
         // Not very nice, but it works :)
         if (sanitize)
             this.strValue = value.replace(value.substring(0, 1), "");
+        else
+            this.strValue = value;
     }
 
     public Value(boolean value) {
@@ -47,7 +49,7 @@ public class Value {
             case NUMBER -> String.valueOf(numValue);
             case STRING -> String.format("\"%s\"", strValue);
             case BOOL -> String.valueOf(boolValue);
-            default -> "WTF";
+            default -> "NOVAL";
         };
     }
 

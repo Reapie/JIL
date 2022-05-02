@@ -7,10 +7,6 @@
     <properties/>
     <border type="none"/>
     <children>
-      <component id="4c27" class="javax.swing.JEditorPane" binding="console">
-        <constraints border-constraint="South"/>
-        <properties/>
-      </component>
       <toolbar id="1752d">
         <constraints border-constraint="North"/>
         <properties/>
@@ -38,12 +34,29 @@
           <component id="fe493" class="javax.swing.JTextArea" binding="codeArea">
             <constraints/>
             <properties>
+              <focusable value="true"/>
               <font/>
               <text value=""/>
             </properties>
           </component>
         </children>
       </scrollpane>
+      <grid id="fb492" binding="consoleContainer" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="South"/>
+        <properties/>
+        <border type="etched" title="Output"/>
+        <children>
+          <component id="fde62" class="javax.swing.JTextArea" binding="console">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <columns value="0"/>
+              <editable value="false"/>
+              <focusable value="false"/>
+              <rows value="5"/>
+            </properties>
+          </component>
+        </children>
+      </grid>
     </children>
   </grid>
 </form>

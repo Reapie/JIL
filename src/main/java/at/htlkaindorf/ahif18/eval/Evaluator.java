@@ -34,6 +34,7 @@ public class Evaluator {
         Lexer l;
         Parser p;
         Evaluator e;
+        AST ast;
         try {
             do {
                 System.out.println("Enter the expression to evaluate (END to exit):");
@@ -42,7 +43,9 @@ public class Evaluator {
                     break;
                 l = new Lexer(input);
                 p = new Parser(l.lex());
-                e = new Evaluator(p.parse());
+                ast = p.parse();
+                e = new Evaluator(ast);
+                ast.print();
                 System.out.println(e.evaluate());
             } while(true);
         } catch (Exception ignored) {}
