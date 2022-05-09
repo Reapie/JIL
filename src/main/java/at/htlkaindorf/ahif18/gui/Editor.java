@@ -225,7 +225,7 @@ public class Editor {
         reader.close();
 
         for(String line : sourceCodeList){
-            sourceCode+=line;
+            sourceCode+=line + "\n";
         }
 
         codeArea.setText(sourceCode);
