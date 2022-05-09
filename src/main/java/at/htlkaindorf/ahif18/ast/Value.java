@@ -47,7 +47,7 @@ public class Value {
     public String toString() {
         return switch (type) {
             case NUMBER -> String.valueOf(numValue);
-            case STRING -> String.format("\"%s\"", strValue);
+            case STRING -> strValue;
             case BOOL -> String.valueOf(boolValue);
             default -> "NOVAL";
         };

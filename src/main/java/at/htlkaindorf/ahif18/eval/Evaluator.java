@@ -18,7 +18,11 @@ public class Evaluator {
     }
 
     public Value evaluate() {
-        return ast.getRoot().eval();
+        try {
+            return ast.getRoot().eval();
+        } catch (EvaluatorException e) {
+            return new Value(e.getMessage(), false);
+        }
     }
 
     public static String pipeline(String input) {

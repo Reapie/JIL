@@ -7,6 +7,7 @@ import at.htlkaindorf.ahif18.tokens.Token;
 import at.htlkaindorf.ahif18.tokens.TokenCategory;
 import at.htlkaindorf.ahif18.tokens.TokenType;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class Parser {
@@ -28,6 +29,15 @@ public class Parser {
         else {
             lookahead = tokens.getFirst();
         }
+    }
+
+    // returns the Token ahead of the current lookahead
+    private Token peekToken() {
+        System.out.println(tokens);
+        if (tokens.size() > 1) {
+            return tokens.get(1);
+        }
+        return new Token("EOF", TokenType.TK_EOF, lookahead.getLineNumber());
     }
 
     private Expr expression() throws ParserException {
@@ -94,19 +104,29 @@ public class Parser {
 
     private Expr argument() throws ParserException {
         if (lookahead.getType().getCategory() == TokenCategory.STD_FUNC) {
-            // argument -> FUNCTION argument
+            // argument -> FUNCTION argument(s)
             Token identifier = lookahead;
+            ArrayList<Expr> arguments = new ArrayList<>();
+            while (lookahead.getType() != TokenType.TK_CLOSE) {
+                nextToken();
+                // allow function calls without arguments because why not
+                if (lookahead.getType() == TokenType.TK_OPEN && peekToken().getType() == TokenType.TK_CLOSE)
+                    break;
+                arguments.add(argument());
+            }
             nextToken();
-            return new FunctionExpr(identifier, argument());
-        } else if (lookahead.getType() == TokenType.TK_OPEN) {
-            // argument -> OPEN_BRACKET sum CLOSE_BRACKET
+            return new FunctionExpr(identifier, arguments);
+        } else if (lookahead.getType() == TokenType.TK_OPEN || lookahead.getType() == TokenType.TK_COMMA) {
+            // argument -> OPEN_BRACKET anything CLOSE_BRACKET
             nextToken();
             Expr expr = expression();
 
-            if (lookahead.getType() != TokenType.TK_CLOSE)
-                throw new ParserException("Closing brackets expected and " + lookahead.getLexeme() + " found instead");
+            if (lookahead.getType() != TokenType.TK_CLOSE && lookahead.getType() != TokenType.TK_COMMA
+                    && lookahead.getType() != TokenType.TK_EOF) {
+                throw new ParserException("Closing brackets or Comma expected and " + lookahead.getLexeme() + " found instead");
+            }
 
-            nextToken();
+            //nextToken(); //needs to stay commented out, otherwise the parser will not recognize the closing bracket
             return expr;
         }
         // argument -> value

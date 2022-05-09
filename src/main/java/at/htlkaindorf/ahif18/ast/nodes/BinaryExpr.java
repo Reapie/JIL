@@ -1,6 +1,7 @@
 package at.htlkaindorf.ahif18.ast.nodes;
 
 import at.htlkaindorf.ahif18.ast.Value;
+import at.htlkaindorf.ahif18.eval.EvaluatorException;
 import at.htlkaindorf.ahif18.parser.ParserException;
 import at.htlkaindorf.ahif18.tokens.Token;
 import lombok.Data;
@@ -12,16 +13,16 @@ public class BinaryExpr extends Expr {
     private Expr left, right;
     private Value leftV, rightV;
 
-    public BinaryExpr(Token type, Expr left, Expr right) {
+    public BinaryExpr(Token type, Expr left, Expr right){
         this.type = type;
         this.left = left;
         this.right = right;
-        leftV = left.eval();
-        rightV = right.eval();
     }
 
     @Override
-    public Value eval() {
+    public Value eval() throws EvaluatorException {
+        leftV = left.eval();
+        rightV = right.eval();
         try {
             switch (type.getType()) {
                 case TK_PLUS -> {

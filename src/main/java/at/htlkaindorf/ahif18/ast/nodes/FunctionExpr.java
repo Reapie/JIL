@@ -1,12 +1,15 @@
 package at.htlkaindorf.ahif18.ast.nodes;
 
 import at.htlkaindorf.ahif18.ast.Value;
+import at.htlkaindorf.ahif18.eval.EvaluatorException;
 import at.htlkaindorf.ahif18.tokens.Token;
+
+import java.util.ArrayList;
 
 public class FunctionExpr extends Expr {
 
     public enum FUNCTION {
-        SQRT, PYTAG,
+        SQRT, HYPOT,
         SIN, COS, TAN,
         FLOOR, CEIL,
 
@@ -15,14 +18,14 @@ public class FunctionExpr extends Expr {
 
     private Token identifier;
     private FUNCTION type;
-    private Expr argument;
+    private ArrayList<Expr> params;
 
-    public FunctionExpr(Token identifier, Expr argument) {
+    public FunctionExpr(Token identifier, ArrayList<Expr> params) {
         this.identifier = identifier;
-        this.argument = argument;
+        this.params = params;
         type = switch (identifier.getLexeme().toLowerCase()) {
             case "sqrt" -> FUNCTION.SQRT;
-            case "pytag" -> FUNCTION.PYTAG;
+            case "hypot" -> FUNCTION.HYPOT;
             case "sin" -> FUNCTION.SIN;
             case "cos" -> FUNCTION.COS;
             case "tan" -> FUNCTION.TAN;
@@ -33,8 +36,9 @@ public class FunctionExpr extends Expr {
     }
 
     @Override
-    public Value eval() {
+    public Value eval() throws EvaluatorException {
         return switch (type) {
+            case HYPOT -> hypot();
             case SQRT -> sqrt();
             case SIN -> sin();
             case COS -> cos();
@@ -43,24 +47,39 @@ public class FunctionExpr extends Expr {
         };
     }
 
-    private Value sqrt() {
-        return new Value(Math.sqrt(argument.eval().getNumValue()));
+    private void sizeCheck(int size) throws EvaluatorException {
+        if (params.size() != size) {
+            throw new EvaluatorException("Function " + identifier.getLexeme() + " expects " + size + " parameters, but got " + params.size());
+        }
     }
 
-    private Value sin() {
-        return new Value(Math.sin(argument.eval().getNumValue()));
+    private Value hypot() throws EvaluatorException {
+        sizeCheck(2);
+        return new Value(Math.sqrt(Math.pow(params.get(0).eval().getNumValue(), 2) + Math.pow(params.get(1).eval().getNumValue(), 2)));
     }
 
-    private Value cos() {
-        return new Value(Math.cos(argument.eval().getNumValue()));
+    private Value sqrt() throws EvaluatorException {
+        sizeCheck(1);
+        return new Value(Math.sqrt(params.get(0).eval().getNumValue()));
     }
 
-    private Value tan() {
-        return new Value(Math.tan(argument.eval().getNumValue()));
+    private Value sin() throws EvaluatorException {
+        sizeCheck(1);
+        return new Value(Math.sin(params.get(0).eval().getNumValue()));
+    }
+
+    private Value cos() throws EvaluatorException {
+        sizeCheck(1);
+        return new Value(Math.cos(params.get(0).eval().getNumValue()));
+    }
+
+    private Value tan() throws EvaluatorException {
+        sizeCheck(1);
+        return new Value(Math.tan(params.get(0).eval().getNumValue()));
     }
 
     @Override
     public String toString() {
-        return null;
+        return identifier.getLexeme() + "(" + params.toString() + ")";
     }
 }
