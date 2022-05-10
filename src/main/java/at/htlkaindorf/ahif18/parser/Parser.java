@@ -9,6 +9,7 @@ import at.htlkaindorf.ahif18.tokens.TokenType;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Scanner;
 
 public class Parser {
 
@@ -33,7 +34,6 @@ public class Parser {
 
     // returns the Token ahead of the current lookahead
     private Token peekToken() {
-        System.out.println(tokens);
         if (tokens.size() > 1) {
             return tokens.get(1);
         }
@@ -107,26 +107,26 @@ public class Parser {
             // argument -> FUNCTION argument(s)
             Token identifier = lookahead;
             ArrayList<Expr> arguments = new ArrayList<>();
-            while (lookahead.getType() != TokenType.TK_CLOSE) {
+            nextToken();
+            do {
                 nextToken();
                 // allow function calls without arguments because why not
-                if (lookahead.getType() == TokenType.TK_OPEN && peekToken().getType() == TokenType.TK_CLOSE)
+                if (lookahead.getType() == TokenType.TK_OPEN && peekToken().getType() == TokenType.TK_CLOSE) {
                     break;
+                }
                 arguments.add(argument());
-            }
+            } while (lookahead.getType() == TokenType.TK_COMMA);
             nextToken();
             return new FunctionExpr(identifier, arguments);
-        } else if (lookahead.getType() == TokenType.TK_OPEN || lookahead.getType() == TokenType.TK_COMMA) {
+        } else if (lookahead.getType() == TokenType.TK_OPEN) {
             // argument -> OPEN_BRACKET anything CLOSE_BRACKET
+            // argument -> COMMA anything {CLOSE_BRACKET | COMMA}
             nextToken();
             Expr expr = expression();
-
-            if (lookahead.getType() != TokenType.TK_CLOSE && lookahead.getType() != TokenType.TK_COMMA
-                    && lookahead.getType() != TokenType.TK_EOF) {
-                throw new ParserException("Closing brackets or Comma expected and " + lookahead.getLexeme() + " found instead");
+            if (lookahead.getType() != TokenType.TK_CLOSE) {
+                throw new ParserException("Closing brackets expected and " + lookahead.getLexeme() + " found instead");
             }
-
-            //nextToken(); //needs to stay commented out, otherwise the parser will not recognize the closing bracket
+            nextToken();
             return expr;
         }
         // argument -> value

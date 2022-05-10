@@ -28,7 +28,9 @@ public class Evaluator {
     public static String pipeline(String input) {
         Lexer l = new Lexer(input);
         Parser p = new Parser(l.lex());
-        Evaluator e = new Evaluator(p.parse());
+        AST ast = p.parse();
+        //ast.print();
+        Evaluator e = new Evaluator(ast);
         return e.evaluate().toString();
     }
 
