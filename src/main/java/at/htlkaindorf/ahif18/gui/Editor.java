@@ -2,15 +2,22 @@ package at.htlkaindorf.ahif18.gui;
 
 import at.htlkaindorf.ahif18.eval.Evaluator;
 import com.formdev.flatlaf.FlatIntelliJLaf;
+import lombok.SneakyThrows;
 
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.*;
 import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.List;
 
 public class Editor {
 
@@ -22,15 +29,60 @@ public class Editor {
     private JScrollPane jsp;
     private JPanel consoleContainer;
     private final JTextArea lines;
+    private JPopupMenu fileMenue;
+    private JFrame frame;
+    private String filePath = "";
 
 
-    public Editor() {
+    public Editor(JFrame frame) {
+        this.frame = frame;
         RUN.addActionListener(actionEvent -> run());
         codeArea.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_F5)
                     run();
+            }
+        });
+
+        fileMenue = new JPopupMenu();
+
+        JMenuItem jmiNew = new JMenuItem("New");
+        JMenuItem jmiOpen = new JMenuItem("Open");
+        JMenuItem jmiTest = new JMenuItem("Test");
+
+        fileMenue.add(jmiNew);
+        fileMenue.add(jmiOpen);
+        fileMenue.add(jmiTest);
+
+        btnFile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+               fileMenue.show(frame,10,60);
+            }
+        });
+
+        jmiNew.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("works");
+            }
+        });
+
+        jmiOpen.addActionListener(new ActionListener() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                openFile();
+            }
+
+
+        });
+
+        jmiTest.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("works");
             }
         });
 
@@ -120,7 +172,7 @@ public class Editor {
     public static void main(String[] args) {
         FlatIntelliJLaf.setup();
         JFrame frame = new JFrame("Editor");
-        frame.setContentPane(new Editor().mainPanel);
+        frame.setContentPane(new Editor(frame).mainPanel);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setSize(512, 512);
         frame.setLocationRelativeTo(null);
@@ -150,5 +202,39 @@ public class Editor {
             index++;
         }
         return index;
+    }
+
+    private void openFile() throws IOException {
+
+        JFileChooser chooser = new JFileChooser();
+        chooser.addChoosableFileFilter(new FileNameExtensionFilter("*.jil", "jil"));
+        chooser.setAcceptAllFileFilterUsed(true);
+        int result =  chooser.showOpenDialog(null);
+
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+
+        File selectedFile = chooser.getSelectedFile();
+        filePath = selectedFile.getAbsolutePath();
+        String sourceCode = "";
+        BufferedReader reader = new BufferedReader(new FileReader(selectedFile));
+
+        List<String> sourceCodeList = reader.lines().collect(Collectors.toList());
+        reader.close();
+
+        for(String line : sourceCodeList){
+            sourceCode+=line + "\n";
+        }
+
+        codeArea.setText(sourceCode);
+    }
+
+    private void saveFile(){
+
+    }
+    private void saveFileAs(){
+
     }
 }
