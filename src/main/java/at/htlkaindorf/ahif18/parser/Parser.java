@@ -9,7 +9,6 @@ import at.htlkaindorf.ahif18.tokens.TokenType;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Scanner;
 
 public class Parser {
 
@@ -107,7 +106,6 @@ public class Parser {
             // argument -> FUNCTION argument(s)
             Token identifier = lookahead;
             ArrayList<Expr> arguments = new ArrayList<>();
-            nextToken();
             do {
                 nextToken();
                 // allow function calls without arguments because why not
@@ -123,13 +121,13 @@ public class Parser {
             // argument -> COMMA anything {CLOSE_BRACKET | COMMA}
             nextToken();
             Expr expr = expression();
-            if (lookahead.getType() != TokenType.TK_CLOSE) {
+            if (lookahead.getType() != TokenType.TK_CLOSE && lookahead.getType() != TokenType.TK_COMMA) {
                 throw new ParserException("Closing brackets expected and " + lookahead.getLexeme() + " found instead");
             }
-            nextToken();
+            //nextToken();
             return expr;
         }
-        // argument -> value
+        // argument -> expression
         return value();
     }
 
