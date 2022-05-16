@@ -28,7 +28,7 @@ public class Editor {
     private JTextPane codeArea;
     private JScrollPane jsp;
     private JPanel consoleContainer;
-    private final JTextArea lines;
+    private JTextArea lines = null;
     private JPopupMenu fileMenue;
     private JFrame frame;
     private String filePath = "";
@@ -38,22 +38,38 @@ public class Editor {
         this.frame = frame;
         RUN.addActionListener(actionEvent -> run());
         codeArea.addKeyListener(new KeyAdapter() {
+            @SneakyThrows
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_F5)
+                if (e.getKeyCode() == KeyEvent.VK_F5) {
                     run();
-            }
-        });
+                }else if (e.getKeyCode() == KeyEvent.VK_S && (e.getModifiers() & KeyEvent.CTRL_MASK) > 0) {
+                    if(filePath.isEmpty()){
+                        saveFileAs();
+                    }else{
+                        saveFile();
+                    }
+
+                } else if (e.getKeyCode() == KeyEvent.VK_N && (e.getModifiers() & KeyEvent.CTRL_MASK) > 0) {
+                    newFile();
+
+                }else if (e.getKeyCode() == KeyEvent.VK_O && (e.getModifiers() & KeyEvent.CTRL_MASK) > 0) {
+                    openFile();
+                }
+
+        }});
 
         fileMenue = new JPopupMenu();
 
         JMenuItem jmiNew = new JMenuItem("New");
         JMenuItem jmiOpen = new JMenuItem("Open");
-        JMenuItem jmiTest = new JMenuItem("Test");
+        JMenuItem jmiSave = new JMenuItem("Save");
+        JMenuItem jmiSaveAs = new JMenuItem("Save As");
 
         fileMenue.add(jmiNew);
         fileMenue.add(jmiOpen);
-        fileMenue.add(jmiTest);
+        fileMenue.add(jmiSave);
+        fileMenue.add(jmiSaveAs);
 
         btnFile.addActionListener(new ActionListener() {
             @Override
@@ -65,8 +81,10 @@ public class Editor {
         jmiNew.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("works");
+                newFile();
             }
+
+
         });
 
         jmiOpen.addActionListener(new ActionListener() {
@@ -79,10 +97,23 @@ public class Editor {
 
         });
 
-        jmiTest.addActionListener(new ActionListener() {
+        jmiSave.addActionListener(new ActionListener() {
+            @SneakyThrows
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("works");
+                if(filePath.isEmpty()){
+                    saveFileAs();
+                }else{
+                   saveFile();
+                }
+            }
+        });
+
+        jmiSaveAs.addActionListener(new ActionListener() {
+            @SneakyThrows
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                saveFileAs();
             }
         });
 
@@ -122,7 +153,7 @@ public class Editor {
                 if (before < 0) before = 0;
                 int after = findFirstNonWordChar(text, offs);
 
-                if (text.substring(before, after).matches("(\\W)*(private|public|protected)")) {
+                if (text.substring(before, after).matches("(\\W)*(var|null)")) {
                     setCharacterAttributes(before, after - before, attr, false);
                 } else {
                     setCharacterAttributes(before, after - before, attrBlack, false);
@@ -231,10 +262,40 @@ public class Editor {
         codeArea.setText(sourceCode);
     }
 
-    private void saveFile(){
+    private void saveFile() throws IOException {
+        String code = codeArea.getText();
+        BufferedWriter writer = new BufferedWriter(new FileWriter(filePath));
+
+        writer.write(code);
+        writer.close();
 
     }
-    private void saveFileAs(){
+    private void saveFileAs() throws IOException {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Save");
+        chooser.setSelectedFile(new File("programm.jil"));
 
+
+
+        int result =  chooser.showSaveDialog(null);
+
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        filePath = chooser.getSelectedFile().getAbsolutePath();
+
+
+        if(!filePath.contains(".jil")){
+            filePath = filePath + ".jil";
+        }
+
+        saveFile();
+
+    }
+
+    private void newFile() {
+        codeArea.setText("");
+        filePath = "";
     }
 }
