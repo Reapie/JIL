@@ -3,9 +3,15 @@ package at.htlkaindorf.ahif18.tokens;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/*
- * This Class describes the Grammar of our language,
+
+/**
+ * This Class describes the Grammar of our language
+ * Every type of token and its regex is here
  * keep in mind that the fist tokens will be checked fist, so you have to eg: put ** before *
+ *
+ * @author Martin Juritsch
+ * @version 1.3
+ * @since 1.0
  */
 public enum TokenType {
 
@@ -68,6 +74,12 @@ public enum TokenType {
         this.category = category;
     }
 
+    /**
+     * Method for lexer to know when a match ends
+     *
+     * @return index of when the match ends
+     * @since 1.0
+     */
     public int endOfMatch(String s) {
         Matcher m = pattern.matcher(s);
         if (m.find())

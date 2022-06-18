@@ -5,7 +5,13 @@ import at.htlkaindorf.ahif18.eval.EvaluatorException;
 import at.htlkaindorf.ahif18.parser.ParserException;
 import at.htlkaindorf.ahif18.tokens.Token;
 import lombok.Data;
-
+/**
+ * Expression that has 2 sides and an operand
+ *
+ * @author Martin Juritsch
+ * @version 1.2
+ * @since 1.0
+ */
 @Data
 public class BinaryExpr extends Expr {
 
@@ -19,49 +25,32 @@ public class BinaryExpr extends Expr {
         this.right = right;
     }
 
+    /**
+     * Eval method
+     * Calls the corresponding sub method for the operator
+     *
+     * @return value of the exepression
+     * @since 1.0
+     */
     @Override
     public Value eval() throws EvaluatorException {
         leftV = left.eval();
         rightV = right.eval();
         try {
-            switch (type.getType()) {
-                case TK_PLUS -> {
-                    return add();
-                }
-                case TK_MINUS -> {
-                    return sub();
-                }
-                case TK_MUL -> {
-                    return mul();
-                }
-                case TK_DIV -> {
-                    return div();
-                }
-                case TK_POW -> {
-                    return pow();
-                }
-                case TK_LESS -> {
-                    return less();
-                }
-                case TK_GT -> {
-                    return greater();
-                }
-                case TK_LEG -> {
-                    return lessEqual();
-                }
-                case TK_GEQ -> {
-                    return greaterEqual();
-                }
-                case TK_EQ -> {
-                    return equal();
-                }
-                case TK_NOTEQ -> {
-                    return notEqual();
-                }
-                default -> {
-                    throw new ParserException("Unknown binary operator: '" + type.getLexeme() + "'");
-                }
-            }
+            return switch (type.getType()) {
+                case TK_PLUS -> add();
+                case TK_MINUS -> sub();
+                case TK_MUL -> mul();
+                case TK_DIV -> div();
+                case TK_POW -> pow();
+                case TK_LESS -> less();
+                case TK_GT -> greater();
+                case TK_LEG -> lessEqual();
+                case TK_GEQ -> greaterEqual();
+                case TK_EQ -> equal();
+                case TK_NOTEQ -> notEqual();
+                default -> throw new ParserException("Unknown binary operator: '" + type.getLexeme() + "'");
+            };
         } catch (ParserException e) {
             e.printStackTrace();
             return new Value();

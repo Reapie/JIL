@@ -6,8 +6,19 @@ import at.htlkaindorf.ahif18.tokens.Token;
 
 import java.util.ArrayList;
 
+/**
+ * Expression that is a predefined function
+ * No custom functions for now
+ *
+ * @author Martin Juritsch
+ * @version 1.2
+ * @since 1.0
+ */
 public class FunctionExpr extends Expr {
 
+    /**
+     * The different function types
+     */
     public enum FUNCTION {
         SQRT, HYPOT,
         SIN, COS, TAN,
@@ -35,6 +46,13 @@ public class FunctionExpr extends Expr {
         };
     }
 
+    /**
+     * Eval method
+     * Calls the corresponding sub method for the function type
+     *
+     * @return value of the exepression
+     * @since 1.0
+     */
     @Override
     public Value eval() throws EvaluatorException {
         return switch (type) {

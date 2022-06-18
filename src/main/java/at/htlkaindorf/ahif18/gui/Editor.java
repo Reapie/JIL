@@ -19,16 +19,14 @@ import java.io.*;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.List;
-
+/**
+ * The Editor class represents the GUI. These class contains JavaSwing objects, listeners, methods for code highlighting and so on
+ *
+ * @author Fabian Ladenhaufen
+ * @version 1.0
+ * @since 1.0
+ */
 public class Editor {
-
-    /**
-     * The Editor class represents the GUI. These class contains JavaSwing objects, listeners, methods for code highlighting and so on
-     *
-     * @author Fabian Ladenhaufen
-     * @version 1.0
-     * @since 1.0
-     */
 
     /**
      * the mainpanel of the JFrame
@@ -68,6 +66,7 @@ public class Editor {
      * filepath for the save location
      */
     private String filePath = "";
+    private String syntaxRegex = "(\\W)*(sqrt|sin|)";
     private JPanel consoleContainer;
 
     /**
@@ -168,7 +167,7 @@ public class Editor {
                 //sets row number text to lines
                 lines.setText(getTextLines());
 
-                System.out.println("InsertString");
+                //System.out.println("InsertString");
                 String text = getText(0, getLength());
 
 
@@ -181,7 +180,7 @@ public class Editor {
 
                 while (wordR <= after) {
                     if (wordR == after || String.valueOf(text.charAt(wordR)).matches("\\W")) {
-                        if (text.substring(wordL, wordR).matches("(\\W)*(var|null)"))
+                        if (text.substring(wordL, wordR).matches(syntaxRegex))
                             setCharacterAttributes(wordL, wordR - wordL, attr, false);
                         else
                             setCharacterAttributes(wordL, wordR - wordL, attrBlack, false);
@@ -202,15 +201,15 @@ public class Editor {
              */
             public void remove(int offs, int len) throws BadLocationException {
                 super.remove(offs, len);
-               lines.setText(getTextLines());
-                System.out.println("remove string");
+                lines.setText(getTextLines());
+                //System.out.println("remove string");
 
                 String text = getText(0, getLength());
                 int before = findLastNonWordChar(text, offs);
                 if (before < 0) before = 0;
                 int after = findFirstNonWordChar(text, offs);
 
-                if (text.substring(before, after).matches("(\\W)*(var|null)")) {
+                if (text.substring(before, after).matches(syntaxRegex)) {
                     setCharacterAttributes(before, after - before, attr, false);
                 } else {
                     setCharacterAttributes(before, after - before, attrBlack, false);

@@ -1,22 +1,20 @@
 package at.htlkaindorf.ahif18.tokens;
 
+/**
+ * Groups TokenType into categories
+ * Used by parser
+ *
+ * @author Martin Juritsch
+ * @version 1.1
+ * @since 1.0
+ */
 public enum TokenCategory {
-        OP_COMPAR(1),
-        OP_BOOL(1),
-        OP_MULDIV(3),
-        OP_PLUSMIN(2),
-        OP_POWER(4),
-        OP_GROUP(5),
-        STD_FUNC(5),
-        DEFAULT(0);
-
-        private final int priority;
-
-        private TokenCategory(int priority) {
-            this.priority = priority;
-        }
-
-        public int getPriority() {
-            return priority;
-        }
+        OP_COMPAR(),
+        OP_BOOL(),
+        OP_MULDIV(),
+        OP_PLUSMIN(),
+        OP_POWER(),
+        OP_GROUP(),
+        STD_FUNC(),
+        DEFAULT();
 }

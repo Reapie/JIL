@@ -8,7 +8,13 @@ import at.htlkaindorf.ahif18.parser.Parser;
 import at.htlkaindorf.ahif18.tokens.TokenType;
 
 import java.util.Scanner;
-
+/**
+ * Recursive Descent Parser implementation
+ *
+ * @author Fabian Ladenhaufen
+ * @version 1.0
+ * @since 1.0
+ */
 public class Evaluator {
 
     private final AST ast;
@@ -17,6 +23,13 @@ public class Evaluator {
         this.ast = ast;
     }
 
+    /**
+     * Starts the lexing process
+     * Descent over syntax tree starts here
+     *
+     * @return value of the syntax tree
+     * @since 1.0
+     */
     public Value evaluate() {
         try {
             return ast.getRoot().eval();
@@ -25,6 +38,13 @@ public class Evaluator {
         }
     }
 
+    /**
+     * Starts the lexing process
+     * Descent over syntax tree starts here
+     *
+     * @return List of tokens in correct order
+     * @since 1.0
+     */
     public static String pipeline(String input) {
         Lexer l = new Lexer(input);
         Parser p = new Parser(l.lex());
@@ -34,6 +54,11 @@ public class Evaluator {
         return e.evaluate().toString();
     }
 
+    /**
+     * Method for testing and demo purposes
+     *
+     * @since 1.1
+     */
     public static void main(String[] args) {
         Scanner scan = new Scanner(System.in);
         String input;
